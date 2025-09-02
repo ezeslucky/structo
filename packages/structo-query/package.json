@@ -1,0 +1,9 @@
+{
+  "name": "@structopkgs/structo-query",
+  "version": "1.2.1",
+  "description": "query",
+  "main": "index.js",
+  "repository": "https://github.com/ezeslucky/structo.git",
+  "author": "ezeslucky",
+  "license": "yes"
+}
