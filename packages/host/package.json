@@ -1,0 +1,13 @@
+{
+  "name": "@structo/host",
+  "version": "1.0.2",
+  "description": "hosting",
+  "main": "index.js",
+  "repository": "https://github.com/ezeslucky/structo.git",
+  "author": "ezeslucky",
+  "license": "yes",
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  }
+}
