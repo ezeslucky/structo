@@ -20,6 +20,8 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "structopkgs/airtable"
+    "structopkgs/airtable",
+    "packages/query",
+    "packages/host"
   ]
 }
