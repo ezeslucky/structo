@@ -33,7 +33,7 @@ function getStructoDefaultSWROptions(opts?:{
 }
 
 
-export function usePlasmicQueryData<T>(
+export function useStructoQueryData<T>(
   key: Key,
   fetcher: Fetcher<T>
 ): { data?: T; error?: Error; isLoading?: boolean } {
@@ -232,9 +232,9 @@ function isPromiseLike(x: any) {
   );
 }
 
-export function isPlasmicPrepass() {
+export function isStructoPrepass() {
   return !!(React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
-    ?.ReactCurrentDispatcher?.current?.isPlasmicPrepass;
+    ?.ReactCurrentDispatcher?.current?.isStructoPrepass;
 }
 
 export type HeadMetadata = {

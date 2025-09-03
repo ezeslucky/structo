@@ -4,6 +4,9 @@
   "compilerOptions": {
       "jsx": "react-jsx",        // or "react-jsxdev" in dev mode
     "jsxImportSource": "react",
-    "outDir": "./api/tsc"
+    "outDir": "./api/tsc",
+    "composite": true,
+    "declaration": true,
+    
   }
 }
