@@ -1,5 +1,5 @@
 {
-  "name": "structo",
+  "name": "@structo/cli",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -23,6 +23,7 @@
     "packages/*",
     "structopkgs/airtable",
     "packages/query",
-    "packages/host"
+    "packages/host",
+    "packages/cli"
   ]
 }
