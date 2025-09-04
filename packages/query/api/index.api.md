@@ -1,4 +1,4 @@
-## Api Report file for "@structo/query"
+## Api Report file for "@structoapp/query"
 
 ```ts
 

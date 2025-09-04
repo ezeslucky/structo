@@ -5,28 +5,17 @@ const root = globalThis as any;
 export type Fetcher = (...args: any[]) => Promise<any>;
 
 export interface FetcherMeta {
-  /**
-   * Any unique identifying string for this fetcher.
-   */
+ 
   name: string;
-  /**
-   * The Studio-user-friendly display name.
-   */
+  
   displayName?: string;
-  /**
-   * The symbol to import from the importPath.
-   */
+ 
   importName?: string;
   args: { name: string; type: PrimitiveType }[];
   returns: PrimitiveType;
-  /**
-   * Either the path to the fetcher relative to `rootDir` or the npm
-   * package name
-   */
+  
   importPath: string;
-  /**
-   * Whether it's a default export or named export
-   */
+  
   isDefaultExport?: boolean;
 }
 

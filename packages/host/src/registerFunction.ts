@@ -324,7 +324,7 @@ export default function registerFunction<F extends (...args: any[]) => any>(
   fn: F,
   meta: CustomFunctionMeta<F>
 ) {
-  // Check for duplicates
+  
   if (
     root.__StructoFunctionsRegistry.some(
       (r: CustomFunctionRegistration) =>

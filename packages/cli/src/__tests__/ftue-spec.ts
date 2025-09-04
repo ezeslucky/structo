@@ -2,7 +2,7 @@ jest.mock("../api");
 import { sync } from "../actions/sync";
 import {
   expectProject1Components,
-  expectProject1PlasmicJson,
+  expectProject1StructoJson,
   opts,
   standardTestSetup,
   standardTestTeardown,
@@ -21,7 +21,7 @@ afterEach(() => {
 describe("first-time-user-experience", () => {
   test("missing auth", async () => {
     // Trying to sync is going to fail without a valid auth file
-    tmpRepo.deletePlasmicAuth();
+    tmpRepo.deleteStructoAuth();
     await expect(sync(opts)).rejects.toThrow();
   });
 
@@ -38,6 +38,6 @@ describe("first-time-user-experience", () => {
 
     expect(tmpRepo.checkFile("./src/DepComponent.tsx")).toBeFalsy();
 
-    expectProject1PlasmicJson();
+    expectProject1StructoJson();
   });
 });

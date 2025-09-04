@@ -559,7 +559,7 @@ export async function writeConfig(
       JSON.stringify(
         {
           ...config,
-          $schema: `https://unpkg.com/@structo/cli@${config.cliVersion}/dist/structo.schema.json`,
+          $schema: `https://unpkg.com/@structoapp/cli@${config.cliVersion}/dist/structo.schema.json`,
         },
         undefined,
         2

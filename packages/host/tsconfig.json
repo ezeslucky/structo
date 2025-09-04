@@ -24,7 +24,5 @@
 
     
   },
-  "references": [
-    { "path": "../packages/query" }
-  ]
+  
 }

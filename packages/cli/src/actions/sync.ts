@@ -109,11 +109,11 @@ async function ensureRequiredPackages(
   };
 
   const cliVersion = getCliVersion();
-  if (!cliVersion || semver.gt(requireds["@structo/cli"], cliVersion)) {
+  if (!cliVersion || semver.gt(requireds["@structoapp/cli"], cliVersion)) {
     const isGlobal = isCliGloballyInstalled(context.rootDir);
     await confirmInstall(
-      "@structo/cli",
-      requireds["@structo/cli"],
+      "@structoapp/cli",
+      requireds["@structoapp/cli"],
       cliVersion,
       {
         global: isGlobal,
@@ -122,7 +122,7 @@ async function ensureRequiredPackages(
     );
 
     logger.info(
-      chalk.bold("@structo/cli has been upgraded; please try again!")
+      chalk.bold("@structoapp/cli has been upgraded; please try again!")
     );
 
     // Exit so the user can run again with the new cli

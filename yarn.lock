@@ -2867,9 +2867,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@structo/cli@workspace:packages/cli":
+"@structoapp/cli@workspace:packages/cli":
   version: 0.0.0-use.local
-  resolution: "@structo/cli@workspace:packages/cli"
+  resolution: "@structoapp/cli@workspace:packages/cli"
   dependencies:
     "@babel/core": "npm:^7.12.3"
     "@babel/generator": "npm:^7.12.1"
@@ -2939,14 +2939,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@structo/host@workspace:packages/host":
+"@structoapp/host@workspace:packages/host":
   version: 0.0.0-use.local
-  resolution: "@structo/host@workspace:packages/host"
+  resolution: "@structoapp/host@workspace:packages/host"
   dependencies:
     "@rollup/plugin-commonjs": "npm:^28.0.6"
     "@rollup/plugin-json": "npm:^6.1.0"
     "@rollup/plugin-node-resolve": "npm:^16.0.1"
-    "@structo/query": "workspace:*"
+    "@structoapp/query": "workspace:*"
     "@types/classnames": "npm:^2.3.4"
     "@types/node": "npm:^24.3.0"
     "@types/react": "npm:^19.1.12"
@@ -2963,9 +2963,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@structo/query@workspace:*, @structo/query@workspace:packages/query":
+"@structoapp/query@workspace:*, @structoapp/query@workspace:packages/query":
   version: 0.0.0-use.local
-  resolution: "@structo/query@workspace:packages/query"
+  resolution: "@structoapp/query@workspace:packages/query"
   dependencies:
     "@types/react": "npm:^19.1.12"
     "@types/react-dom": "npm:^19.1.9"

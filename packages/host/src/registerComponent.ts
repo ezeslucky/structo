@@ -14,25 +14,13 @@ const root = globalThis as any;
 
 export interface ActionProps<P> {
   componentProps: P;
-  /**
-   * `contextData` can be `null` if the prop controls are rendering before
-   * the component instance itself (it will re-render once the component
-   * calls `setControlContextData`)
-   */
+  
   contextData: InferDataType<P> | null;
-  /**
-   * Operations available to the editor that allow modifying the entire component.
-   */
+  
   studioOps: StudioOps;
-  /**
-   * Metadata from the studio project.
-   */
+  
   projectData: ProjectData;
-  /**
-   * The document that the component will be rendered into; instead of using
-   * `document` directly (for, say, `document.querySelector()` etc.), you
-   * should use this instead.
-   */
+  
   studioDocument: typeof document;
 }
 
