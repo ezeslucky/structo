@@ -1,12 +1,11 @@
 {
   "name": "@structoapp/prepass",
   "version": "1.2.3",
-  "main": "index.js",
+  "main": "./dist/index.cjs.js",
   "repository": "https://github.com/ezeslucky/structo.git",
   "author": "ezeslucky",
   "license": "MIT",
   "types": "./dist/index.d.ts",
-  "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
   "files": [
     "dist"
@@ -24,11 +23,12 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/react": "^18.2.33"
+    "@types/react": "^18.2.33",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@plasmicapp/react-ssr-prepass": "^2.0.9",
     "@structoapp/query": "1.2.3"
-    
   },
   "peerDependencies": {
     "react": ">=16.8.0",
