@@ -1,5 +1,5 @@
 {
-  "name": "@structoapp/cli",
+  "name": "structo-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -17,16 +17,16 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "yarn@4.9.4",
+   "packageManager": "yarn@1.22.22",
   "workspaces": [
-    "apps/*",
     "packages/*",
+    "structopkgs/*",
     "structopkgs/airtable",
     "packages/query",
     "packages/host",
     "packages/cli",
     "packages/prepass",
     "packages/structo",
-    "packages/"
+    "packages/react-ssr-prepass"
   ]
 }
