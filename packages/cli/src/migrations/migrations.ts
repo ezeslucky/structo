@@ -75,23 +75,23 @@ export async function runNecessaryMigrations(
 
   if (!!curVersion && semver.lt(cliVersion, curVersion)) {
     const confirm = await confirmWithUser(
-      `Project requires @structo/cli>=${curVersion} (You currently have ${cliVersion}). Would you like to upgrade it?`,
+      `Project requires @structoapp/cli>=${curVersion} (You currently have ${cliVersion}). Would you like to upgrade it?`,
       yes
     );
     if (!confirm) {
       throw new HandledError("Upgrading is required to continue.");
     }
 
-    const success = installUpgrade(cur, "@structo/cli", baseDir, {
+    const success = installUpgrade(cur, "@structoapp/cli", baseDir, {
       global: isCliGloballyInstalled(path.dirname(configFile)),
       dev: true,
     });
 
     logger.info(
-      chalk.bold("@structo/cli has been upgraded; please try again!")
+      chalk.bold("@structoapp/cli has been upgraded; please try again!")
     );
 
-    throw new HandledError(success ? "" : "Error upgrading @structo/cli");
+    throw new HandledError(success ? "" : "Error upgrading @structoapp/cli");
   }
 
   const context: MigrateContext = {

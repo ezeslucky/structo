@@ -2,10 +2,7 @@ import { CSSProperties, StructoElement } from "./element-types";
 import { StyleSection } from "./registerComponent";
 
 export interface CanvasComponentProps<Data = any> {
-  /**
-   * This prop is only provided within the canvas of Structo Studio.
-   * Allows the component to set data to be consumed by the props' controls.
-   */
+  
   setControlContextData?: (data: Data) => void;
 }
 
@@ -18,30 +15,17 @@ export type InferDataType<P> = P extends CanvasComponentProps<infer Data>
   ? Data
   : any;
 
-/**
- * Context that we pass back to control functions.
- */
+
 export type ControlContext<P> = [
-  /**
-   * props
-   */
+  
   P,
-  /**
-   * `contextData` can be `null` if the prop controls are rendering before
-   * the component instance itself (it will re-render once the component
-   * calls `setControlContextData`)
-   */
+  
   InferDataType<P> | null,
-  /**
-   * Extra information for the control to use
-   */
+  
   ControlExtras
 ];
 
-/**
- * Config option that takes the context (e.g., props) of the component instance
- * to dynamically set its value.
- */
+
 export type ContextDependentConfig<P, R> = (...args: ControlContext<P>) => R;
 
 export interface PropTypeBase<P> {
@@ -49,61 +33,33 @@ export interface PropTypeBase<P> {
   description?: string;
   helpText?: string;
   required?: boolean;
-  /**
-   * If the user has chosen to use a dynamic expression for this prop, provide
-   * a hint as to the expected values that the expression should evaluate to.
-   * This hint will be displayed alongside the code editor.  You may use
-   * markdown in the text here.
-   */
+  
   exprHint?: string;
-  /**
-   * Function for whether this prop should be hidden in the right panel,
-   * given the current props for this component
-   */
+ 
   hidden?: ContextDependentConfig<P, boolean>;
   readOnly?: boolean | ContextDependentConfig<P, boolean>;
-  /**
-   * If true, will hide the prop in a collapsed section; good for props that
-   * should not usually be used.
-   */
+
   advanced?: boolean;
-  /**
-   * If true, does not allow the user to use a dynamic expression for this prop
-   */
+
   disableDynamicValue?: boolean;
-  /**
-   * If set to true, the component will be remounted when the prop value is updated.
-   * (This behavior only applies to canvas)
-   */
+ 
   forceRemount?: boolean;
-  /**
-   * If true, the prop can't be overriden in different variants.
-   */
+ 
   invariantable?: boolean;
 }
 
 export interface Defaultable<P, T> {
-  /**
-   * Default value to set for this prop when the component is instantiated
-   */
+  
   defaultValue?: T;
 
-  /**
-   * If no prop is given, the component uses a default; specify what
-   * that default is so the Structo user can see it in the studio UI
-   */
+
   defaultValueHint?: T | ContextDependentConfig<P, T | undefined>;
 
-  /**
-   * Use a dynamic value expression as the default instead
-   */
+ 
   defaultExpr?: string;
   defaultExprHint?: string;
 
-  /**
-   * This function validates whether the prop value is valid.
-   * If the value is invalid, it returns an error message. Otherwise, it returns true.
-   */
+
   validator?: (
     value: T,
     ...args: ControlContext<P>
@@ -111,19 +67,9 @@ export interface Defaultable<P, T> {
 }
 
 export interface Controllable {
-  /**
-   * If true, this is a prop that should only be used inside Structo
-   * Studio for rendering artboards; will not be actually used in
-   * generated code.
-   */
+ 
   editOnly?: boolean;
-  /**
-   * If specified, the value used for this prop will instead be
-   * mapped to the uncontrolledProp when generating code. This is
-   * useful if, for example, in the artboard, you want to use `value`
-   * prop to control the component, but in generated code, you want to
-   * map it to `defaultValue`.
-   */
+  
   uncontrolledProp?: string;
 }
 
@@ -153,19 +99,9 @@ export interface HrefType<P> extends PropTypeBaseDefault<P, string> {
 
 export interface ColorType<P> extends PropTypeBaseDefault<P, string> {
   type: "color";
-  /**
-   * If specified, and the user picks a color token in the Studio, then
-   * the value passed in as prop is a css variable reference, like
-   * `var(--TOKEN_ID)`, instead of the resolved hex value of the token.
-   * You should take care in using this in the proper css context --
-   * the css token is only defined if you are rendering under some
-   * Structo component in the DOM tree, which is usually the case,
-   * unless you are using a React portal.
-   */
+ 
   keepCssVar?: boolean;
-  /**
-   * Prevent tokens from being selected.
-   */
+  
   disableTokens?: boolean;
 }
 
@@ -179,52 +115,24 @@ export interface DateRangeStringsType<P>
 
 export interface ClassType<P> extends PropTypeBase<P> {
   type: "class";
-  /**
-   * Additional css selectors that can change how this style should look.
-   * Some examples:
-   *
-   * * `:hover` -- on hover
-   * * `[data-something="blah"] -- when the element with this class has
-   *   an html attribute "data-something=blah"
-   * * :component[data-something="blah"] :self -- when the root of the
-   *   component has an html attribute "data-something=blah". Note that
-   *   the non-standard `:component` selector is used to select the
-   *   component root, and the non-standard `:self` selector is used
-   *   to select the element that this class is attached to.
-   */
+  
   selectors?: {
-    /**
-     * A css selector, like `:hover` or `[data-something="blah"]`.
-     */
+  
     selector: string;
-    /**
-     * An optional human-friendly label for the selector, so the studio user
-     * knows what this selector means.
-     */
+    
     label?: string;
-    /**
-     * Initial styles to be applied for this selector
-     */
+   
     defaultStyles?: CSSProperties;
   }[];
-  /**
-   * If specified, then only shows these style sections for styling this class
-   */
+  
   styleSections?: StyleSection[];
-  /**
-   * Initial styles to be applied for this class
-   */
+  
   defaultStyles?: CSSProperties;
 }
 
 export interface ThemeResetClassType<P> extends PropTypeBase<P> {
   type: "themeResetClass";
-  /**
-   * Normally, theme reset class will only target Structo-generated tags
-   * with the default tag styles. If you also want to target non-Structo-generated
-   * tags (say, rendered by your code components, or fetched as an HTML blob
-   * from somewhere), then specify `true` here.
-   */
+ 
   targetAllTags?: boolean;
 }
 
@@ -403,61 +311,33 @@ export interface RichSlotType<P> {
   type: "slot";
   description?: string;
 
-  /**
-   * The unique names of all code components that can be placed in the slot
-   */
+  
   allowedComponents?: string[];
   
   allowRootWrapper?: boolean;
-  /**
-   * Whether the "empty slot" placeholder should be hidden in the canvas.
-   */
+ 
   hidePlaceholder?: boolean;
-  /**
-   * Whether the slot is repeated, i.e., is rendered multiple times using
-   * repeatedElement().
-   */
+  
   isRepeated?: boolean;
 
-  /**
-   * A nicer, human-readable display name for your slot prop
-   */
+  
   displayName?: string;
 
-  /**
-   * Function for whether this slot should be hidden from the left tree,
-   * given the current props for this component
-   */
+ 
   hidden?: ContextDependentConfig<P, boolean>;
 
-  /**
-   * If slot is a render prop (accepts a function that takes in some
-   * arguments and returns some JSX), then specify the names of the
-   * arguments expected by the render prop function.
-   */
+  
   renderPropParams?: string[];
 
-  /**
-   * When inserting top-level "page sections", should this slot be the default target?
-   */
+  
   unstable__isMainContentSlot?: boolean;
 
   defaultValue?: StructoElement | StructoElement[];
 
-  /**
-   * When true, when you click for the first time in this slot and the component was not selected, the component itself
-   * is selected, making it easier to select the component instead of slot contents. So for
-   * instance, setting this on a Button slot ensures that clicking on the Button’s text will still select the Button and not
-   * the text element in its slot. Clicking again will deep-select the slot content. Similar in this regard to trapsFocus on components.
-   *
-   * Furthermore, the component further shows the props of whatever is in the slot on
-   *  the parent component for the user's convenience. Handy for various “wrapper" components, form fields, and so on.
-   */
+
   mergeWithParent?: boolean | ContextDependentConfig<P, boolean>;
 
-  /**
-   * A function that returns true to hide the merged props conditionally.
-   */
+  
   hiddenMergedProps?: ContextDependentConfig<P, boolean>;
 }
 
@@ -494,40 +374,20 @@ export interface ProjectData {
 
 export interface CustomControlProps<P> {
   componentProps: P;
-  /**
-   * `contextData` can be `null` if the prop controls are rendering before
-   * the component instance itself (it will re-render once the component
-   * calls `setControlContextData`)
-   */
+  
   contextData: InferDataType<P> | null;
-  /**
-   * Operations available to the editor that allow modifying the entire component.
-   * Can be null if the custom prop is used in a global context.
-   */
+  
   studioOps: StudioOps | null;
-  /**
-   * Metadata from the studio project.
-   */
+  
   projectData: ProjectData;
   value: any;
-  /**
-   * Sets the value to be passed to the prop. Expects a JSON-compatible value.
-   */
+  
   updateValue: (newVal: any) => void;
-  /**
-   * Full screen modal component
-   */
+ 
   FullscreenModal: React.ComponentType<ModalProps>;
-  /**
-   * Modal component for the side pane
-   */
+  
   SideModal: React.ComponentType<ModalProps>;
 
-  /**
-   * The document that the component will be rendered into; instead of using
-   * `document` directly (for, say, `document.querySelector()` etc.), you
-   * should use this instead.
-   */
   studioDocument: typeof document;
 }
 export type CustomControl<P> = React.ComponentType<CustomControlProps<P>>;

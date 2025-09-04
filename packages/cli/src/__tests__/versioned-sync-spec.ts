@@ -1,8 +1,8 @@
 import { sync } from "../actions/sync";
 import {
   expectProject1Components,
-  expectProject1PlasmicJson,
-  expectProjectAndDepPlasmicJson,
+  expectProject1StructoJson,
+  expectProjectAndDepStructoJson,
   mockApi,
   opts,
   project1Config,
@@ -36,7 +36,7 @@ describe("versioned-sync", () => {
     expect(tmpRepo.checkFile("./src/DepComponent.tsx")).toBeFalsy();
 
     // Check plasmic.json
-    expectProject1PlasmicJson();
+    expectProject1StructoJson();
   });
 
   test("syncs missing components", async () => {
@@ -44,9 +44,9 @@ describe("versioned-sync", () => {
     opts.nonRecursive = true;
     // Simulates user deleting files by accident, since the project exists in plasmic.json,
     // but not in the project directory
-    const plasmicJson = tmpRepo.readPlasmicJson();
-    plasmicJson.projects.push(project1Config);
-    tmpRepo.writePlasmicJson(plasmicJson);
+    const structoJson = tmpRepo.readStructoJson();
+    structoJson.projects.push(project1Config);
+    tmpRepo.writeStructoJson(structoJson);
     await expect(sync(opts)).resolves.toBeUndefined();
   });
 
@@ -64,8 +64,8 @@ describe("versioned-sync", () => {
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
 
-    const plasmicJson = tmpRepo.readPlasmicJson();
-    const projectInConfig = plasmicJson.projects.find(
+    const structoJson = tmpRepo.readStructoJson();
+    const projectInConfig = structoJson.projects.find(
       (p) => p.projectId === "projectId1"
     );
     const componentInConfig = !!projectInConfig
@@ -100,17 +100,17 @@ describe("versioned-sync", () => {
     const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
     mockProject.version = "2.0.0";
     mockApi.addMockProject(mockProject);
-    // Read in updated plasmic.json post-sync
-    const plasmicJson = tmpRepo.readPlasmicJson();
-    expect(plasmicJson.projects.length).toEqual(1); // projectId1
-    expect(plasmicJson.projects[0].components.length).toEqual(2); // Container+Button
-    // Try syncing non-existent version
-    plasmicJson.projects[0].version = "1.2.10"; // Doesn't exist
-    tmpRepo.writePlasmicJson(plasmicJson);
+   
+    const structoJson = tmpRepo.readStructoJson();
+    expect(structoJson.projects.length).toEqual(1); // projectId1
+    expect(structoJson.projects[0].components.length).toEqual(2); // Container+Button
+   
+    structoJson.projects[0].version = "1.2.10"; 
+    tmpRepo.writeStructoJson(structoJson);
     await expect(sync(opts)).rejects.toThrow();
-    // Try syncing existing version
-    plasmicJson.projects[0].version = "2.0.0"; // Doesn't exist
-    tmpRepo.writePlasmicJson(plasmicJson);
+    
+    structoJson.projects[0].version = "2.0.0"; 
+    tmpRepo.writeStructoJson(structoJson);
     await expect(sync(opts)).resolves.toBeUndefined();
     const button = mockApi.stringToMockComponent(
       tmpRepo.getComponentFileContents("projectId1", "buttonId")
@@ -129,10 +129,10 @@ describe("versioned-sync", () => {
     mockProject.version = "1.10.1";
     mockApi.addMockProject(mockProject);
     // Update plasmic.json to use semver
-    const plasmicJson = tmpRepo.readPlasmicJson();
-    expect(plasmicJson.projects.length).toEqual(1);
-    expect(plasmicJson.projects[0].components.length).toEqual(2);
-    plasmicJson.projects[0].version = "^1.2.3";
+    const structoJson = tmpRepo.readStructoJson();
+    expect(structoJson.projects.length).toEqual(1);
+    expect(structoJson.projects[0].components.length).toEqual(2);
+    structoJson.projects[0].version = "^1.2.3";
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
     const button = mockApi.stringToMockComponent(
@@ -155,7 +155,7 @@ describe("recursive-sync", () => {
 
     expect(tmpRepo.checkFile("./src/DepComponent.tsx")).toBeFalsy();
 
-    expectProject1PlasmicJson();
+    expectProject1StructoJson();
   });
 
   test("dependencies base case", async () => {
@@ -170,7 +170,6 @@ describe("recursive-sync", () => {
     expect(depComponent?.name).toEqual("DepComponent");
     expect(depComponent?.version).toEqual("2.3.4");
 
-    // Check plasmic.json
-    expectProjectAndDepPlasmicJson();
+    expectProjectAndDepStructoJson();
   });
 });

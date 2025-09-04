@@ -129,8 +129,8 @@ export interface VersionResolution {
 
 export interface RequiredPackages {
   "@structo/loader": string;
-  "@structo/cli": string;
-  "@structo/host": string;
+  "@structoapp/cli": string;
+  "@structoapp/host": string;
   "@structo/react-web": string;
   "@structo/react-web-runtime": string;
 }

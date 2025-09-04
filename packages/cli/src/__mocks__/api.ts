@@ -397,8 +397,8 @@ class StructoApi {
     return {
       //@ts-ignore
       "@structo/loader": "0.0.1",
-      "@structo/cli": "0.0.1",
-      "@structo/host": "0.0.1",
+      "@structoapp/cli": "0.0.1",
+      "@structoapp/host": "0.0.1",
       "@structo/react-web": "0.0.1",
       "@structo/react-web-runtime": "0.0.1",
     };

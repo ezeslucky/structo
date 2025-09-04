@@ -1,4 +1,4 @@
-import * as StructoQuery from "@structo/query";
+import * as StructoQuery from "@structoapp/query";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as jsxDevRuntime from "react/jsx-dev-runtime";
@@ -14,11 +14,7 @@ export * from "./exports";
 const root = globalThis as any;
 
 if (root.__Sub == null) {
-  // Creating a side effect here by logging, so that vite won't
-  // ignore this block for whatever reason. Hiding this for now
-  // as users are complaining; will have to check if this has
-  // been fixed with vite.
-  // console.log("Structo: Setting up app host dependencies");
+  
   root.__Sub = {
     React,
     ReactDOM,

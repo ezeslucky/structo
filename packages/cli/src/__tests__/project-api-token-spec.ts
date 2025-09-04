@@ -1,9 +1,9 @@
 import { sync } from "../actions/sync";
 import {
-  defaultPlasmicJson,
+  defaultStructoJson,
   expectProject1Components,
-  expectProject1PlasmicJson,
-  expectProjectAndDepPlasmicJson,
+  expectProject1StructoJson,
+  expectProjectAndDepStructoJson,
   mockApi,
   opts,
   project1Config,
@@ -25,8 +25,8 @@ afterEach(() => {
 
 function removeAuth() {
   opts.auth = undefined;
-  // Don't need to remove this file, we just do for good measure.
-  tmpRepo.deletePlasmicAuth();
+
+  tmpRepo.deleteStructoAuth();
 }
 
 describe("Project API tokens", () => {
@@ -36,9 +36,8 @@ describe("Project API tokens", () => {
 
     expectProject1Components();
 
-    expectProject1PlasmicJson();
+    expectProject1StructoJson();
 
-    // Re-run, this time with no auth.
     removeAuth();
     await expect(sync(opts)).resolves.toBeUndefined();
   });
@@ -63,15 +62,15 @@ describe("Project API tokens", () => {
 
   test("is corrected by auth'd user if token was initially incorrect", async () => {
     opts.projects = ["projectId1"];
-    tmpRepo.writePlasmicJson({
-      ...defaultPlasmicJson,
+    tmpRepo.writeStructoJson({
+      ...defaultStructoJson,
       projects: [{ ...project1Config, projectApiToken: "blah" }],
     });
     await expect(sync(opts)).resolves.toBeUndefined();
 
     expectProject1Components();
 
-    expectProject1PlasmicJson({ projectApiToken: true });
+    expectProject1StructoJson({ projectApiToken: true });
 
     // Re-run, this time with no auth.
     removeAuth();
@@ -82,20 +81,20 @@ describe("Project API tokens", () => {
 
   test("is filled in by auth'd user if project exists but token was initially missing", async () => {
     opts.projects = ["projectId1"];
-    tmpRepo.writePlasmicJson({
-      ...defaultPlasmicJson,
+    tmpRepo.writeStructoJson({
+      ...defaultStructoJson,
       projects: [project1Config],
     });
     await expect(sync(opts)).resolves.toBeUndefined();
 
     expectProject1Components();
 
-    expectProject1PlasmicJson({ projectApiToken: true });
+    expectProject1StructoJson({ projectApiToken: true });
 
     // Re-run, this time with no auth.
     removeAuth();
     await expect(sync(opts)).rejects.toThrow(
-      "Unable to authenticate Plasmic. Please run 'plasmic auth' or check the projectApiTokens in your plasmic.json, and try again."
+      "Unable to authenticate Structo. Please run 'structo auth' or check the projectApiTokens in your structo.json, and try again."
     );
   });
 
@@ -109,8 +108,8 @@ describe("Project API tokens", () => {
   test("when incorrect, should fail", async () => {
     opts.projects = ["projectId1"];
     removeAuth();
-    tmpRepo.writePlasmicJson({
-      ...defaultPlasmicJson,
+    tmpRepo.writeStructoJson({
+      ...defaultStructoJson,
       projects: [{ ...project1Config, projectApiToken: "blah" }],
     });
     await expect(sync(opts)).rejects.toThrow(
@@ -124,15 +123,15 @@ describe("Project API tokens", () => {
 
     opts.projects = ["projectId1"];
     removeAuth();
-    tmpRepo.writePlasmicJson({
-      ...defaultPlasmicJson,
+    tmpRepo.writeStructoJson({
+      ...defaultStructoJson,
       projects: [{ ...project1Config, projectApiToken: "abc" }],
     });
     await expect(sync(opts)).resolves.toBeUndefined();
 
     expectProject1Components();
 
-    expectProjectAndDepPlasmicJson();
+    expectProjectAndDepStructoJson();
   });
 
   test("works even if dependency was determined to not need an update", async () => {
@@ -152,8 +151,8 @@ describe("Project API tokens", () => {
   test("should prompt for auth if you have only irrelevant tokens", async () => {
     opts.projects = ["dependencyId1"];
     removeAuth();
-    tmpRepo.writePlasmicJson({
-      ...defaultPlasmicJson,
+    tmpRepo.writeStructoJson({
+      ...defaultStructoJson,
       projects: [{ ...project1Config, projectApiToken: "abc" }],
     });
     await expect(sync(opts)).rejects.toThrow("Unable to authenticate");
