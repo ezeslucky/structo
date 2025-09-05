@@ -1,0 +1,47 @@
+{
+  "name": "@structoapp/prepass",
+  "version": "1.2.3",
+  "main": "./dist/index.cjs.js",
+  "repository": "https://github.com/ezeslucky/structo.git",
+  "author": "ezeslucky",
+  "license": "MIT",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "build": "yarn build:types && yarn build:index",
+    "build:types": "yarn tsc --emitDeclarationOnly",
+    "build:index": "esbuild --format=cjs --outfile=./dist/index.cjs.js ./src/index.tsx && esbuild --format=esm --outfile=./dist/index.esm.js ./src/index.tsx",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test",
+    "coverage": "TEST_CWD=`pwd` yarn --cwd=../.. test --coverage --passWithNoTests",
+    "lint": "eslint",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.33",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@plasmicapp/react-ssr-prepass": "^2.0.9",
+    "@structoapp/query": "1.2.3"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs.js",
+      "import": "./dist/index.esm.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

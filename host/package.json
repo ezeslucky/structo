@@ -1,0 +1,69 @@
+{
+  "name": "@structoapp/host",
+  "version": "1.0.2",
+  "description": "hosting",
+  "main": "dist/index.cjs.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/host.esm.js",
+  "nx": {
+    "targets": {
+      "build": {
+        "inputs": [
+          "{projectRoot}/**/*",
+          "!{projectRoot}/**/dist/**/*",
+          "!{projectRoot}/src/version.ts"
+        ],
+        "outputs": [
+          "{projectRoot}/**/dist/**/*",
+          "{projectRoot}/src/version.ts"
+        ]
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "registerComponent",
+    "registerFunction",
+    "registerGlobalContext",
+    "registerToken",
+    "registerTrait"
+  ],
+  "size-limit": [
+    {
+      "path": "dist/host.esm.js",
+      "limit": "3 KB"
+    }
+  ],
+  "scripts": {
+    "build": "./update_version.sh && rollup -c",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
+    "lint": "eslint",
+    "prepublishOnly": "npm run build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "repository": "https://github.com/ezeslucky/structo.git",
+  "author": "ezeslucky",
+  "license": "yes",
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@structoapp/query": "1.2.3",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "csstype": "^3.1.3",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "rollup": "^4.50.0",
+    "rollup-plugin-banner2": "^1.3.1",
+    "rollup-plugin-dts": "^6.2.3",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "tsc": "^2.0.4",
+    "window-or-global": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.3.4"
+  }
+}

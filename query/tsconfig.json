@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.types.json",
+  "include": ["./src"],
+  "compilerOptions": {
+      "jsx": "react-jsx",        // or "react-jsxdev" in dev mode
+    "jsxImportSource": "react",
+    "outDir": "./api/tsc",
+    "composite": true,
+    "declaration": true,
+    
+  }
+}
