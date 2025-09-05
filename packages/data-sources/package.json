@@ -5,7 +5,7 @@
   "repository": "https://github.com/ezeslucky/structo.git",
   "author": "ezeslucky",
   "license": "MIT",
-   "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "exports": {
@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "yarn build:types && yarn build:index",
-    "build:types": "yarn tsc",
+    "build:types": "tsc",
     "build:index": "node ../../build.mjs ./src/index.tsx",
     "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
     "lint": "eslint",
@@ -35,7 +35,6 @@
   "peerDependencies": {
     "react": ">=16.8.0"
   },
- 
   "size-limit": [
     {
       "path": "dist/index.js",
@@ -43,14 +42,20 @@
     }
   ],
   "devDependencies": {
+    "@types/minimatch": "^6.0.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    
-    "fast-stringify": "^2.0.0"
+    "@plasmicapp/isomorphic-unfetch": "^1.0.3",
+    "@structoapp/data-sources-context": "1.2.0",
+    "@structoapp/host": "1.0.2",
+    "@structoapp/query": "1.2.3",
+    "fast-stringify": "^2.0.0",
+    "minimatch": "^10.0.3"
   },
   "publishConfig": {
     "access": "public"
