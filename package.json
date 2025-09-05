@@ -27,6 +27,9 @@
     "packages/cli",
     "packages/prepass",
     "packages/structo",
-    "packages/react-ssr-prepass"
+    "packages/react-ssr-prepass",
+    "packages/data-sources-context",
+    "packages/data-sources",
+    "packages/react-web"
   ]
 }
