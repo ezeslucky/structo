@@ -38,7 +38,8 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/isomorphic-unfetch": "^1.0.3"
+    "@plasmicapp/isomorphic-unfetch": "^1.0.3",
+    "typescript": "^5.9.2"
   },
   "publishConfig": {
     "access": "public"
