@@ -238,7 +238,7 @@
     js-tokens "^4.0.0"
     picocolors "^1.0.0"
 
-"@babel/parser@*":
+"@babel/parser@*", "@babel/parser@^7.28.4":
   version "7.28.4"
   resolved "https://registry.npmmirror.com/@babel/parser/-/parser-7.28.4.tgz#da25d4643532890932cc03f7705fe19637e03fa8"
   integrity sha512-yZbBqeM6TkpP9du/I2pUZnJsRMGGvOuIrhjzC1AwHwW+6he4mni6Bp/m8ijn0iOuZuPI2BfkCoSRunpyjnrQKg==
@@ -3088,7 +3088,7 @@
   dependencies:
     "@babel/types" "^7.0.0"
 
-"@types/babel__parser@^7.1.1":
+"@types/babel__parser@^7.1.1", "@types/babel__parser@^7.1.5":
   version "7.1.5"
   resolved "https://registry.npmmirror.com/@types/babel__parser/-/babel__parser-7.1.5.tgz#905461f38c444c9d335dadd92f2fa72cd0603b8b"
   integrity sha512-yyWPJg3KawM9ydArmt2q+UE6dhy0usfXNB1yxDv0gE27KbZXeFCDtqR2L4jdVxXqq7I9tvkL9zuSY/ZVgF6fXQ==

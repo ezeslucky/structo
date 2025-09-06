@@ -5,7 +5,7 @@ import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
 import { deleteGlob } from "../utils/file-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
-import { makePlasmicHostPage_fileRouter_codegen } from "./templates/file-router/plasmic-host";
+import { makePlasmicHostPage_fileRouter_codegen } from "./templates/file-router/structo-host";
 import { makeCustomRoot_file_router_codegen } from "./templates/file-router/root";
 
 export const tanstackStrategy: CPAStrategy = {

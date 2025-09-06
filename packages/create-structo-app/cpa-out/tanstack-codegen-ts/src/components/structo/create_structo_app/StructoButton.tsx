@@ -66,8 +66,8 @@ import defaultcss from "../plasmic__default_style.css?url"; // plasmic-import: g
 import projectcss from "./plasmic.css?url"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
 import sty from "./PlasmicButton.css?url"; // plasmic-import: TQcvW_pSKi3/css
 
-import CheckSvgIcon from "./icons/PlasmicIcon__CheckSvg"; // plasmic-import: gj-_D7n31Ho/icon
-import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: 6PNxx3YMyDQ/icon
+import CheckSvgIcon from "./icons/StructoIcon__CheckSvg"; // plasmic-import: gj-_D7n31Ho/icon
+import IconIcon from "./icons/StructoIcon__Icon"; // plasmic-import: 6PNxx3YMyDQ/icon
 
 createPlasmicElementProxy;
 
