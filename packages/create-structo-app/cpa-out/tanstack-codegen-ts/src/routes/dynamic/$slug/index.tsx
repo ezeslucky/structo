@@ -6,7 +6,7 @@ import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-we
 import {
   PlasmicDynamicPage,
   PlasmicDynamicPage__HeadOptions
-} from "../../../components/plasmic/create_plasmic_app/PlasmicDynamicPage";
+} from "../../../components/structo/create_structo_app/PlasmicDynamicPage";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dynamic/$slug/")({

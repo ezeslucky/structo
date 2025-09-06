@@ -6,7 +6,7 @@ import { PageParamsProvider as PageParamsProvider__ } from "@plasmicapp/react-we
 import {
   PlasmicHomepage,
   PlasmicHomepage__HeadOptions
-} from "../components/plasmic/create_plasmic_app/PlasmicHomepage";
+} from "../components/structo/create_structo_app/PlasmicHomepage";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PlasmicButton } from "./plasmic/create_plasmic_app/PlasmicButton";
+import { PlasmicButton } from "./structo/create_plasmic_app/PlasmicButton";
 
 function Button_(props, ref) {
   const { plasmicProps } = PlasmicButton.useBehavior(props, ref);

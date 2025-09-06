@@ -63,7 +63,7 @@ import projectcss from "./plasmic.module.css"; // plasmic-import: 47tFXWjN2C4NyH
 import sty from "./PlasmicButton.module.css"; // plasmic-import: TQcvW_pSKi3/css
 
 import CheckSvgIcon from "./icons/PlasmicIcon__CheckSvg"; // plasmic-import: gj-_D7n31Ho/icon
-import IconIcon from "./icons/PlasmicIcon__Icon"; // plasmic-import: 6PNxx3YMyDQ/icon
+import IconIcon from "./icons/StructoIcon__Icon"; // plasmic-import: 6PNxx3YMyDQ/icon
 
 createPlasmicElementProxy;
 

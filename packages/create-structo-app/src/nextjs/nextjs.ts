@@ -13,13 +13,13 @@ import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
 import { makeCatchallPage_app_loader } from "./templates/app-loader/catchall-page";
 import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
-import { makePlasmicInit_app_loader } from "./templates/app-loader/plasmic-init";
-import { makePlasmicInitClient_app_loader } from "./templates/app-loader/plasmic-init-client";
+import { makePlasmicInit_app_loader } from "./templates/app-loader/structo-init";
+import { makePlasmicInitClient_app_loader } from "./templates/app-loader/structo-init-client";
 import { makeCustomApp_pages_codegen } from "./templates/pages-codegen/app";
-import { makePlasmicHostPage_pages_codegen } from "./templates/pages-codegen/plasmic-host";
+import { makePlasmicHostPage_pages_codegen } from "./templates/pages-codegen/structo-host";
 import { makeCatchallPage_pages_loader } from "./templates/pages-loader/catchall-page";
-import { makePlasmicHostPage_pages_loader } from "./templates/pages-loader/plasmic-host";
-import { makePlasmicInit_pages_loader } from "./templates/pages-loader/plasmic-init";
+import { makePlasmicHostPage_pages_loader } from "./templates/pages-loader/structo-host";
+import { makePlasmicInit_pages_loader } from "./templates/pages-loader/structo-init";
 
 export const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
