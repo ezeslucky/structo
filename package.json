@@ -30,6 +30,8 @@
     "packages/react-ssr-prepass",
     "packages/data-sources-context",
     "packages/data-sources",
-    "packages/react-web"
+    "packages/react-web",
+    "packages/auth-api",
+    "packages/auth-react"
   ]
 }
