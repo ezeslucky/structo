@@ -1,0 +1,212 @@
+
+
+```ts
+
+import { ComponentMeta } from '@structoapp/host';
+import { StructoDataSourceContextValue } from '@structoapp/data-sources-context';
+import { default as React_2 } from 'react';
+import { useStructoDataConfig } from '@structoapp/query';
+
+// @public (undocumented)
+export type BaseFieldConfig = {
+    key?: string;
+    fieldId?: string;
+};
+
+// @public
+export interface ClientQueryResult<T = any> {
+    data?: T;
+    error?: any;
+    isLoading?: boolean;
+    paginate?: Pagination;
+    schema?: TableSchema;
+    total?: number;
+}
+
+// @public (undocumented)
+export interface DataOp {
+    // (undocumented)
+    cacheKey?: string;
+    // (undocumented)
+    invalidatedKeys?: string[] | null;
+    // (undocumented)
+    opId: string;
+    // (undocumented)
+    roleId?: string | null;
+    // (undocumented)
+    sourceId: string;
+    // (undocumented)
+    userArgs?: Record<string, any>;
+}
+
+// @public (undocumented)
+export interface DataSourceSchema {
+    // (undocumented)
+    tables: TableSchema[];
+}
+
+// @public (undocumented)
+export function deriveFieldConfigs<T extends BaseFieldConfig>(specifiedFieldsPartial: Partial<T>[], schema: TableSchema | undefined, makeDefaultConfig: (field: TableFieldSchema | undefined) => T): {
+    mergedFields: T[];
+    minimalFullLengthFields: Partial<T>[];
+};
+
+// @public (undocumented)
+export function executeStructoDataOp<T extends SingleRowResult | ManyRowsResult>(op: DataOp, opts?: ExecuteOpts): Promise<T>;
+
+// @public
+export function executeServerQuery<F extends (...args: any[]) => any>(serverQuery: ServerQuery<F>): Promise<ServerQueryResult<ReturnType<F> | {}>>;
+
+// @public (undocumented)
+export function Fetcher(props: FetcherProps): React_2.ReactElement | null;
+
+// @public (undocumented)
+export const FetcherMeta: ComponentMeta<FetcherProps>;
+
+// @public (undocumented)
+export interface FetcherProps extends DataOpConfig {
+    // (undocumented)
+    children?: ($queries: Record<string, any>) => React_2.ReactElement | null;
+    // (undocumented)
+    dataOp?: DataOp;
+    // (undocumented)
+    queries?: Record<string, any>;
+}
+
+// @public (undocumented)
+export function makeCacheKey(dataOp: DataOp, opts?: {
+    paginate?: Pagination;
+    userAuthToken?: string | null;
+}): string;
+
+// @public (undocumented)
+export function makeQueryCacheKey(id: string, params: any[]): string;
+
+// @public (undocumented)
+export interface ManyRowsResult<T = any> {
+    // (undocumented)
+    data: T[];
+    // (undocumented)
+    paginate?: Pagination;
+    // (undocumented)
+    schema: TableSchema;
+    // (undocumented)
+    total?: number;
+}
+
+// @public (undocumented)
+export function mkStructoUndefinedServerProxy(): {
+    data: {};
+    isLoading: boolean;
+};
+
+// @public (undocumented)
+export function normalizeData(rawData: unknown): NormalizedData | undefined;
+
+// @public (undocumented)
+export interface NormalizedData {
+    // (undocumented)
+    data: Record<string, unknown>[];
+    // (undocumented)
+    schema?: TableSchema;
+}
+
+// @public (undocumented)
+export interface Pagination {
+    // (undocumented)
+    pageIndex: number;
+    // (undocumented)
+    pageSize: number;
+}
+
+// @public (undocumented)
+export type QueryResult = Partial<ManyRowsResult<any>> & {
+    error?: any;
+    isLoading?: boolean;
+};
+
+// @public (undocumented)
+export interface ServerQuery<F extends (...args: any[]) => Promise<any>> {
+    // (undocumented)
+    execParams: () => Parameters<F>;
+    // (undocumented)
+    fn: F;
+    // (undocumented)
+    id: string;
+}
+
+// @public (undocumented)
+export interface ServerQueryResult<T = any> {
+    // (undocumented)
+    data: T;
+    // (undocumented)
+    isLoading: boolean;
+}
+
+// @public (undocumented)
+export interface SingleRowResult<T = any> {
+    // (undocumented)
+    data: T;
+    // (undocumented)
+    schema: TableSchema;
+}
+
+// @public (undocumented)
+export interface TableFieldSchema {
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    label?: string;
+    // (undocumented)
+    options?: string[];
+    // (undocumented)
+    primaryKey?: boolean;
+    // (undocumented)
+    readOnly: boolean;
+    // (undocumented)
+    type: TableFieldType;
+}
+
+// @public (undocumented)
+export type TableFieldType = "string" | "boolean" | "number" | "date" | "datetime" | "enum" | "json" | "unknown";
+
+// @public (undocumented)
+export interface TableSchema {
+    // (undocumented)
+    fields: TableFieldSchema[];
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    label?: string;
+    // (undocumented)
+    schema?: string;
+}
+
+// @public @deprecated (undocumented)
+export function useDependencyAwareQuery({ $queries, getDataOp, setDollarQueries, name, pageIndex, pageSize, }: DependencyAwareQueryConfig): void;
+
+// @public (undocumented)
+export function useNormalizedData(rawData: unknown): NormalizedData | undefined;
+
+export { useStructoDataConfig }
+
+// @public (undocumented)
+export function useStructoDataMutationOp<T extends SingleRowResult | ManyRowsResult>(dataOp: ResolvableDataOp): () => Promise<T | undefined>;
+
+// @public (undocumented)
+export function useStructoDataOp<T extends SingleRowResult | ManyRowsResult, E = any>(dataOp: ResolvableDataOp, opts?: {
+    paginate?: Pagination;
+    noUndefinedDataProxy?: boolean;
+}): ClientQueryResult<T["data"]>;
+
+// @public
+export function useStructoInvalidate(): (invalidatedKeys: string[] | null | undefined) => Promise<any[] | undefined>;
+
+// @public (undocumented)
+export function useStructoServerQuery<F extends (...args: any[]) => Promise<any>>(serverQuery: ServerQuery<F>, fallbackData?: ReturnType<F>, opts?: {
+    noUndefinedDataProxy?: boolean;
+}): Partial<ServerQueryResult<ReturnType<F>>>;
+
+// (No @packageDocumentation comment for this package)
+
+```
