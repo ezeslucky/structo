@@ -3,7 +3,7 @@
 // @ts-nocheck
 /* prettier-ignore-start */
 import React from "react";
-import { classNames } from "@plasmicapp/react-web";
+import { classNames } from "@structoapp/react-web";
 
 export type IconIconProps = React.ComponentProps<"svg"> & {
   title?: string;
@@ -20,7 +20,7 @@ export function IconIcon(props: IconIconProps) {
       viewBox={"0 0 16 16"}
       height={"1em"}
       width={"1em"}
-      className={classNames("plasmic-default__svg", className)}
+      className={classNames("structo-default__svg", className)}
       style={style}
       {...restProps}
     >

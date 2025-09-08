@@ -1,6 +1,6 @@
 {
   "name": "@structoapp/cli",
-  "version": "0.1.342",
+  "version": "1.2.0",
   "description": " cli for syncing local code with  designs",
   "engines": {
     "node": ">=12"

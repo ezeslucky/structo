@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { PlasmicCanvasHost } from '@plasmicapp/loader-nextjs';
-import { PLASMIC } from '@/plasmic-init';
+import { StructoCanvasHost } from '@structoapp/loader-nextjs';
+import { STRUCTO } from '@/structo-init';
 
-export default function PlasmicHost() {
-  return PLASMIC && <PlasmicCanvasHost />;
+export default function StructoHost() {
+  return STRUCTO && <StructoCanvasHost />;
 }

@@ -1,39 +1,39 @@
 import React from "react";
 import Helmet from "react-helmet";
 import {
-  PlasmicComponent,
-  PlasmicRootProvider,
+  StructoComponent,
+  StructoRootProvider,
   InitOptions,
   ComponentRenderData,
-} from "@plasmicapp/loader-gatsby";
+} from "@structoapp/loader-gatsby";
 import { graphql, PageProps } from "gatsby";
-import { initPlasmicLoaderWithRegistrations } from "../structo-init";
+import { initStructoLoaderWithRegistrations } from "../structo-init";
 
 export const query = graphql`
   query ($path: String) {
-    plasmicComponents(componentNames: [$path])
-    plasmicOptions
+    structoComponents(componentNames: [$path])
+    structoOptions
   }
 `;
 
-interface PlasmicGatsbyPageProps extends PageProps {
+interface StructoGatsbyPageProps extends PageProps {
   data: {
-    plasmicOptions: InitOptions
-    plasmicComponents: ComponentRenderData
+    structoOptions: InitOptions
+    structoComponents: ComponentRenderData
   }
 }
 
-const PlasmicGatsbyPage = ({ data, location }: PlasmicGatsbyPageProps) => {
+const StructoGatsbyPage = ({ data, location }: StructoGatsbyPageProps) => {
   const {
-    plasmicComponents,
-    plasmicOptions,
+    structoComponents,
+    structoOptions,
   } = data;
-  const pageMeta = plasmicComponents.entryCompMetas[0];
+  const pageMeta = structoComponents.entryCompMetas[0];
   const pageMetadata = pageMeta.pageMetadata;
   return (
-    <PlasmicRootProvider
-      loader={initPlasmicLoaderWithRegistrations(plasmicOptions)}
-      prefetchedData={plasmicComponents}
+    <StructoRootProvider
+      loader={initStructoLoaderWithRegistrations(structoOptions)}
+      prefetchedData={structoComponents}
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
@@ -45,9 +45,9 @@ const PlasmicGatsbyPage = ({ data, location }: PlasmicGatsbyPageProps) => {
         {pageMetadata?.description && <meta property="og:description" content={pageMetadata.description} />}
         {pageMetadata?.openGraphImageUrl && <meta property="og:image" content={pageMetadata.openGraphImageUrl} />}
       </Helmet>
-      <PlasmicComponent component={pageMeta.displayName} />
-    </PlasmicRootProvider>
+      <StructoComponent component={pageMeta.displayName} />
+    </StructoRootProvider>
   );
 };
 
-export default PlasmicGatsbyPage;
+export default StructoGatsbyPage;

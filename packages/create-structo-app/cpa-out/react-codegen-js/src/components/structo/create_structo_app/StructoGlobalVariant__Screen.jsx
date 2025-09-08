@@ -3,7 +3,7 @@
 // @ts-nocheck
 /* prettier-ignore-start */
 import * as React from "react";
-import { createUseScreenVariants } from "@plasmicapp/react-web";
+import { createUseScreenVariants } from "@structoapp/react-web";
 
 export const ScreenContext = React.createContext(
   "PLEASE_RENDER_INSIDE_PROVIDER"

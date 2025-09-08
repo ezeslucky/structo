@@ -8,15 +8,15 @@ const React = require("react")
 
 const HeadComponents = [
   <script
-    key="plasmic-hmr"
+    key="structo-hmr"
     type="text/javascript"
     dangerouslySetInnerHTML={{
       __html: `
-        if (typeof window !== "undefined" && /\\/plasmic-host\\/?$/.test(window.location.pathname)) {
+        if (typeof window !== "undefined" && /\\/structo-host\\/?$/.test(window.location.pathname)) {
           const RealEventSource = window.EventSource;
           window.EventSource = function(url, config) {
             if (/[^a-zA-Z]hmr($|[^a-zA-Z])/.test(url)) {
-              console.warn("Plasmic: disabled EventSource request for", url);
+              console.warn("Structo: disabled EventSource request for", url);
               return {
                 onerror() {}, onmessage() {}, onopen() {}, close() {}
               };
@@ -36,9 +36,9 @@ exports.onRenderBody = ({ pathname, setHeadComponents }) => {
   /**
    * We add the preamble tag script to all pages during development mode
    * because during development all pages are dynamically rendered based
-   * on `/` route, during production we add it only in `/plasmic-host/`
+   * on `/` route, during production we add it only in `/structo-host/`
    */
-  if (!isProduction || pathname === "/plasmic-host/") {
+  if (!isProduction || pathname === "/structo-host/") {
     setHeadComponents(HeadComponents)
   }
 }

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { PlasmicButton } from "./structo/create_plasmic_app/PlasmicButton";
+import { StructoButton } from "./structo/create_structo_app/StructoButton";
 
 function Button_(props, ref) {
-  const { plasmicProps } = PlasmicButton.useBehavior(props, ref);
-  return <PlasmicButton {...plasmicProps} />;
+  const { structoProps } = StructoButton.useBehavior(props, ref);
+  return <StructoButton {...structoProps} />;
 }
 
 const Button = React.forwardRef(Button_);

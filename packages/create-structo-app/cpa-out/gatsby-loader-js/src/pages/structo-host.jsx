@@ -1,19 +1,19 @@
 import * as React from "react"
 import {
-  PlasmicCanvasHost
-} from "@plasmicapp/loader-gatsby"
+  StructoCanvasHost
+} from "@structoapp/loader-gatsby"
 import { graphql } from "gatsby"
-import { initPlasmicLoaderWithRegistrations } from "../plasmic-init"
+import { initStructoLoaderWithRegistrations } from "../structo-init"
 
 export const query = graphql`
   query {
-    plasmicOptions
+    structoOptions
   }
 `
 
 
 export default function Host({ data }) {
-  const { plasmicOptions } = data
-  initPlasmicLoaderWithRegistrations(plasmicOptions)
-  return <PlasmicCanvasHost />
+  const { structoOptions } = data
+  initStructoLoaderWithRegistrations(structoOptions)
+  return <StructoCanvasHost />
 }

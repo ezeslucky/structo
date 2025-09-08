@@ -1,6 +1,6 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import { PlasmicRootProvider } from "@plasmicapp/react-web"
+import { StructoRootProvider } from "@structoapp/react-web"
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -14,10 +14,10 @@ export const Route = createRootRoute({
   }),
   component: () => (
     <RootDocument>
-      <PlasmicRootProvider>
+      <StructoRootProvider>
         <Outlet />
         <TanStackRouterDevtools />
-      </PlasmicRootProvider>
+      </StructoRootProvider>
     </RootDocument>
   ),
 })

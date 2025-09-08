@@ -1,11 +1,8 @@
 {
   "name": "@structoapp/react-web",
   "version": "1.2.0",
-  "description": "rendering in the presentational style",
-  "repository": "https://github.com/ezeslucky/structo.git",
-  "author": "ezeslucky",
-  "license": "mit",
- "main": "dist/index.cjs.js",
+  "description": " library for rendering in the presentational style",
+  "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-web.esm.js",
   "nx": {
@@ -98,7 +95,14 @@
     "test-storybook": "test-storybook"
   },
   "dependencies": {
-    
+    "@structoapp/auth-react": "1.2.0",
+    "@structoapp/data-sources": "1.0.1",
+    "@structoapp/data-sources-context": "1.2.0",
+    "@structoapp/host": "1.0.2",
+    "@structoapp/loader-splits": "1.2.0",
+    "@structoapp/nextjs-app-router": "1.2.0",
+    "@structoapp/prepass": "1.2.3",
+    "@structoapp/query": "1.2.3",
     "@react-aria/checkbox": "^3.15.5",
     "@react-aria/focus": "^3.20.3",
     "@react-aria/interactions": "^3.25.1",
@@ -152,4 +156,3 @@
     "react-dom": ">=16.8.0"
   }
 }
-

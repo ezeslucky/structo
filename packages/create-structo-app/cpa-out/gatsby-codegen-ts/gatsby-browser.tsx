@@ -1,12 +1,12 @@
 import React from "react";
-import { PlasmicRootProvider } from "@plasmicapp/react-web";
+import { StructoRootProvider } from "@structoapp/react-web";
 import { Link } from "gatsby";
 import Helmet from "react-helmet";
 
 export const wrapRootElement = ({ element }) => {
   return (
-    <PlasmicRootProvider Head={Helmet} Link={Link}>
+    <StructoRootProvider Head={Helmet} Link={Link}>
       {element}
-    </PlasmicRootProvider>
+    </StructoRootProvider>
   );
 }
