@@ -1,21 +1,21 @@
 import * as React from "react";
 import {
-  PlasmicButton,
+  StructoButton,
   DefaultButtonProps
-} from "./structo/create_plasmic_app/PlasmicButton";
+} from "./structo/create_structo_app/StructoButton";
 
 import {
   ButtonRef,
   HtmlAnchorOnlyProps,
   HtmlButtonOnlyProps
-} from "@plasmicapp/react-web";
+} from "@structoapp/react-web";
 
 export interface ButtonProps extends DefaultButtonProps {
   // Feel free to add any additional props that this component should receive
 }
 function Button_(props: ButtonProps, ref: ButtonRef) {
-  const { plasmicProps } = PlasmicButton.useBehavior<ButtonProps>(props, ref);
-  return <PlasmicButton {...plasmicProps} />;
+  const { structoProps } = StructoButton.useBehavior<ButtonProps>(props, ref);
+  return <StructoButton {...structoProps} />;
 }
 
 export type ButtonComponentType = {

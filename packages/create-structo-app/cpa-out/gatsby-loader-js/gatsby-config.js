@@ -6,7 +6,7 @@ module.exports = {
     siteUrl: `https://www.yourdomain.tld`,
   },
   plugins: [{
-  resolve: "@plasmicapp/loader-gatsby",
+  resolve: "@structoapp/loader-gatsby",
   options: {
     projects: [
       {
@@ -15,7 +15,7 @@ module.exports = {
       },
     ], // An array of project ids.
     preview: false,
-    defaultPlasmicPage: require.resolve("./src/templates/defaultPlasmicPage.jsx"),
+    defaultStructoPage: require.resolve("./src/templates/defaultStructoPage.jsx"),
   },
 },
 {

@@ -1,31 +1,31 @@
 import React from "react";
 import Helmet from "react-helmet";
 import {
-  PlasmicComponent,
-  PlasmicRootProvider,
-} from "@plasmicapp/loader-gatsby";
+  StructoComponent,
+  StructoRootProvider,
+} from "@structoapp/loader-gatsby";
 import { graphql } from "gatsby";
-import { initPlasmicLoaderWithRegistrations } from "../plasmic-init";
+import { initStructoLoaderWithRegistrations } from "../structo-init";
 
 export const query = graphql`
   query ($path: String) {
-    plasmicComponents(componentNames: [$path])
-    plasmicOptions
+    structoComponents(componentNames: [$path])
+    structoOptions
   }
 `;
 
 
-const PlasmicGatsbyPage = ({ data, location }) => {
+const StructoGatsbyPage = ({ data, location }) => {
   const {
-    plasmicComponents,
-    plasmicOptions,
+    structoComponents,
+    structoOptions,
   } = data;
-  const pageMeta = plasmicComponents.entryCompMetas[0];
+  const pageMeta = structoComponents.entryCompMetas[0];
   const pageMetadata = pageMeta.pageMetadata;
   return (
-    <PlasmicRootProvider
-      loader={initPlasmicLoaderWithRegistrations(plasmicOptions)}
-      prefetchedData={plasmicComponents}
+    <StructoRootProvider
+      loader={initStructoLoaderWithRegistrations(structoOptions)}
+      prefetchedData={structoComponents}
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
@@ -37,9 +37,9 @@ const PlasmicGatsbyPage = ({ data, location }) => {
         {pageMetadata?.description && <meta property="og:description" content={pageMetadata.description} />}
         {pageMetadata?.openGraphImageUrl && <meta property="og:image" content={pageMetadata.openGraphImageUrl} />}
       </Helmet>
-      <PlasmicComponent component={pageMeta.displayName} />
-    </PlasmicRootProvider>
+      <StructoComponent component={pageMeta.displayName} />
+    </StructoRootProvider>
   );
 };
 
-export default PlasmicGatsbyPage;
+export default StructoGatsbyPage;

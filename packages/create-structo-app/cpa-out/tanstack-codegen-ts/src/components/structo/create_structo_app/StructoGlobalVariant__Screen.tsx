@@ -4,7 +4,7 @@
 /* prettier-ignore-start */
 
 import * as React from "react";
-import { createUseScreenVariants } from "@plasmicapp/react-web";
+import { createUseScreenVariants } from "@structoapp/react-web";
 
 export type ScreenValue = "desktopOnly";
 export const ScreenContext = React.createContext<ScreenValue[] | undefined>(

@@ -1,19 +1,10 @@
 import {
-  initPlasmicLoader,
+  initStructoLoader,
   InitOptions,
-} from "@plasmicapp/loader-gatsby";
+} from "@structoapp/loader-gatsby";
 
-export function initPlasmicLoaderWithRegistrations(plasmicOptions: InitOptions) {
-  const PLASMIC = initPlasmicLoader(plasmicOptions);
+export function initStructoLoaderWithRegistrations(structoOptions: InitOptions) {
+  const STRUCTO = initStructoLoader(structoOptions);
 
-  // You can register any code components that you want to use here; see
-  // https://docs.plasmic.app/learn/code-components-ref/
-  // And configure your Plasmic project to use the host url pointing at
-  // the /plasmic-host page of your nextjs app (for example,
-  // http://localhost:8000/plasmic-host).  See
-  // https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
-
-  // PLASMIC.registerComponent(...);
-
-  return PLASMIC;
+  return STRUCTO;
 }

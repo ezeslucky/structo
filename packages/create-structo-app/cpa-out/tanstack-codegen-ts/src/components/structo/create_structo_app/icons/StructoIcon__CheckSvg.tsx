@@ -3,7 +3,7 @@
 // @ts-nocheck
 /* prettier-ignore-start */
 import React from "react";
-import { classNames } from "@plasmicapp/react-web";
+import { classNames } from "@structoapp/react-web";
 
 export type CheckSvgIconProps = React.ComponentProps<"svg"> & {
   title?: string;
@@ -23,7 +23,7 @@ export function CheckSvgIcon(props: CheckSvgIconProps) {
 
         ...(style || {}),
       }}
-      className={classNames("plasmic-default__svg", className)}
+      className={classNames("structo-default__svg", className)}
       {...restProps}
     >
       {title && <title>{title}</title>}

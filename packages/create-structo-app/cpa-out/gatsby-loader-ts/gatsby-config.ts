@@ -10,7 +10,7 @@ const config: GatsbyConfig = {
   // Learn more at: https://gatsby.dev/graphql-typegen
   graphqlTypegen: true,
   plugins: [{
-  resolve: "@plasmicapp/loader-gatsby",
+  resolve: "@structoapp/loader-gatsby",
   options: {
     projects: [
       {
@@ -19,7 +19,7 @@ const config: GatsbyConfig = {
       },
     ], // An array of project ids.
     preview: false,
-    defaultPlasmicPage: path.resolve("./src/templates/defaultPlasmicPage.tsx"),
+    defaultStructoPage: path.resolve("./src/templates/defaultStructoPage.tsx"),
   },
 },
 {

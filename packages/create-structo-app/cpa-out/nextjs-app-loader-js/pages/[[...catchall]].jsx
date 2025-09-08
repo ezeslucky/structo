@@ -1,62 +1,62 @@
 import * as React from "react";
 import {
-  PlasmicComponent,
-  extractPlasmicQueryData,
+  StructoComponent,
+  extractStructoQueryData,
   ComponentRenderData,
-  PlasmicRootProvider,
-} from "@plasmicapp/loader-nextjs";
+  StructoRootProvider,
+} from "@structoapp/loader-nextjs";
 
 import Error from "next/error";
 import { useRouter } from "next/router";
-import { PLASMIC } from "@/plasmic-init";
+import { STRUCTO } from "@/structo-init";
 
-export default function PlasmicLoaderPage(props) {
-  const { plasmicData, queryCache } = props;
+export default function StructoLoaderPage(props) {
+  const { structoData, queryCache } = props;
   const router = useRouter();
-  if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
+  if (!structoData || structoData.entryCompMetas.length === 0) {
     return <Error statusCode={404} />;
   }
-  const pageMeta = plasmicData.entryCompMetas[0];
+  const pageMeta = structoData.entryCompMetas[0];
   return (
-    <PlasmicRootProvider
-      loader={PLASMIC}
-      prefetchedData={plasmicData}
+    <StructoRootProvider
+      loader={STRUCTO}
+      prefetchedData={structoData}
       prefetchedQueryData={queryCache}
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={router.query}
     >
-      <PlasmicComponent component={pageMeta.displayName} />
-    </PlasmicRootProvider>
+      <StructoComponent component={pageMeta.displayName} />
+    </StructoRootProvider>
   );
 }
 
 export const getStaticProps = async (context) => {
   const { catchall } = context.params ?? {};
-  const plasmicPath = typeof catchall === 'string' ? catchall : Array.isArray(catchall) ? `/${catchall.join('/')}` : '/';
-  const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
-  if (!plasmicData) {
-    // non-Plasmic catch-all
+  const structoPath = typeof catchall === 'string' ? catchall : Array.isArray(catchall) ? `/${catchall.join('/')}` : '/';
+  const structoData = await STRUCTO.maybeFetchComponentData(structoPath);
+  if (!structoData) {
+    // non-structo catch-all
     return { props: {} };
   }
-  const pageMeta = plasmicData.entryCompMetas[0];
+  const pageMeta = structoData.entryCompMetas[0];
   // Cache the necessary data fetched for the page
-  const queryCache = await extractPlasmicQueryData(
-    <PlasmicRootProvider
-      loader={PLASMIC}
-      prefetchedData={plasmicData}
+  const queryCache = await extractStructoQueryData(
+    <StructoRootProvider
+      loader={STRUCTO}
+      prefetchedData={structoData}
       pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
     >
-      <PlasmicComponent component={pageMeta.displayName} />
-    </PlasmicRootProvider>
+      <StructoComponent component={pageMeta.displayName} />
+    </StructoRootProvider>
   );
   // Use revalidate if you want incremental static regeneration
-  return { props: { plasmicData, queryCache }, revalidate: 60 };
+  return { props: { structoData, queryCache }, revalidate: 60 };
 }
 
 export const getStaticPaths = async () => {
-  const pageModules = await PLASMIC.fetchPages();
+  const pageModules = await STRUCTO.fetchPages();
   return {
     paths: pageModules.map((mod) => ({
       params: {
