@@ -1,11 +1,11 @@
 import {
   InitOptions,
-  initPlasmicLoader as initPlasmicLoaderReact,
-} from "@plasmicapp/loader-react";
+  initStructoLoader as initStructoLoaderReact,
+} from "@structoapp/loader-react";
 import * as Gatsby from "gatsby";
 
-export function initPlasmicLoader(opts: InitOptions) {
-  const loader = initPlasmicLoaderReact({
+export function initStructoLoader(opts: InitOptions) {
+  const loader = initStructoLoaderReact({
     onClientSideFetch: "warn",
     ...opts,
     platform: "gatsby",

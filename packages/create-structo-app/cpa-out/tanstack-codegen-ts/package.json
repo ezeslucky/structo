@@ -10,8 +10,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.341",
-    "@plasmicapp/react-web": "^0.2.397",
+    "@structoapp/cli": "^1.2.0",
+    "@structoapp/react-web": "^1.2.0",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-query": "^5.84.2",
     "@tanstack/react-router": "^1.130.2",

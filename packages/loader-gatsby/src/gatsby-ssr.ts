@@ -1,4 +1,4 @@
-import { initPlasmicLoader } from "@plasmicapp/loader-react";
+import { initStructoLoader } from "@structoapp/loader-react";
 import { renderToString } from "react-dom/server";
 import type { GatsbyPluginOptions } from "./gatsby-node";
 
@@ -15,14 +15,14 @@ export async function fetchServerFiles(opts: GatsbyPluginOptions) {
     );
     if (projectKeys.some((key) => !loadedProjects.has(key))) {
       loadedProjects.clear();
-      const PLASMIC = initPlasmicLoader({
+      const STRUCTO = initStructoLoader({
         projects: opts.projects,
         preview: opts.preview,
         host: opts.host,
         platform: "gatsby",
       });
-      const components = await PLASMIC.fetchComponents();
-      await PLASMIC.maybeFetchComponentData(...components);
+      const components = await STRUCTO.fetchComponents();
+      await STRUCTO.maybeFetchComponentData(...components);
       projectKeys.forEach((key) => loadedProjects.add(key));
     }
   }

@@ -1,1 +1,1 @@
-export * from "@plasmicapp/loader-edge";
+export * from "@structoapp/loader-edge";

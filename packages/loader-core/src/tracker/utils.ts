@@ -3,21 +3,21 @@ const isBrowser =
   window != null &&
   typeof window.document !== "undefined";
 
-export function getPlasmicCookieValues() {
+export function getStructoCookieValues() {
   if (!isBrowser) {
     return {};
   }
   return Object.fromEntries(
     document.cookie
       .split("; ")
-      .filter((cookie) => cookie.includes("plasmic:"))
+      .filter((cookie) => cookie.includes("structo:"))
       .map((cookie) => cookie.split("="))
       .map(([key, value]) => [key.split(":")[1], value])
   );
 }
 
 export function getVariationCookieValues() {
-  const cookies = getPlasmicCookieValues();
+  const cookies = getStructoCookieValues();
   return Object.fromEntries(
     Object.keys(cookies)
       .map((key) => [key.split(".")[1], cookies[key]])
@@ -53,9 +53,7 @@ export function getDistinctId(): string {
   if (!isBrowser) {
     return "LOADER-SERVER";
   }
-  // Don't generate a new UUID per event so that we don't consider
-  // each event from a different person which uses more storage
-  // return generateUUID();
+  
   return "LOADER-CLIENT";
 }
 

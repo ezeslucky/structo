@@ -1,11 +1,7 @@
-import { LoaderBundleOutput } from "@plasmicapp/loader-fetcher";
+import { LoaderBundleOutput } from "@structoapp/loader-fetcher";
 import { DepsGraph } from "./deps-graph";
 
-/**
- * Get sub-bundle including only modules that are reachable from `names`.
- * @param opts.target by default, will target the browser modules. Can request
- *   the server modules instead.
- */
+
 export function getBundleSubset(
   bundle: LoaderBundleOutput,
   names: string[],
@@ -22,19 +18,25 @@ export function getBundleSubset(
   const isSubModule = (fileName: string) =>
     deps.has(fileName) || namesSet.has(fileName);
   const modules = bundle.modules[target];
+  //@ts-ignore
   const filteredModules = modules.filter((mod) => isSubModule(mod.fileName));
+  //@ts-ignore
   const filteredComponents = bundle.components.filter((c) =>
     isSubModule(c.entry)
   );
+  //@ts-ignore
 
   const filteredComponentsIds = new Set(filteredComponents.map((c) => c.id));
 
   // Make deep copy of filteredIds to avoid mutating original bundle
   const filteredIds = Object.fromEntries(
+    //@ts-ignore
     Object.entries(bundle.filteredIds).map(([k, v]) => [k, [...v]])
   );
   bundle.components
+  //@ts-ignore
     .filter((c) => !filteredComponentsIds.has(c.id))
+    //@ts-ignore
     .forEach((component) => {
       filteredIds[component.projectId] = filteredIds[component.projectId] ?? [];
       if (!filteredIds[component.projectId].includes(component.id)) {

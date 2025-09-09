@@ -2,7 +2,7 @@
   "name": "gatsby-loader-ts",
   "version": "1.0.0",
   "private": true,
-  "description": "Plasmic app for 47tFXWjN2C4NyHFGGpaYQ3",
+  "description": "structo app for 47tFXWjN2C4NyHFGGpaYQ3",
   "keywords": [
     "gatsby"
   ],
@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@plasmicapp/loader-gatsby": "^1.0.398",
+    "@structoapp/loader-gatsby": "^1.2.0",
     "gatsby": "^5.14.1",
     "gatsby-plugin-react-helmet": "^6.14.0",
     "react": "^18.2.0",

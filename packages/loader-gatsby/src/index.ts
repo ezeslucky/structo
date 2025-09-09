@@ -3,18 +3,18 @@ export {
   DataCtxReader,
   DataProvider,
   PageParamsProvider,
-  PlasmicCanvasContext,
-  PlasmicCanvasHost,
-  PlasmicComponent,
-  PlasmicRootProvider,
+  StructoCanvasContext,
+  StructoCanvasHost,
+  StructoComponent,
+  StructoRootProvider,
   repeatedElement,
   useDataEnv,
-  usePlasmicCanvasComponentInfo,
-  usePlasmicCanvasContext,
-  usePlasmicComponent,
+  useStructoCanvasComponentInfo,
+  useStructoCanvasContext,
+  useStructoComponent,
   useSelector,
   useSelectors,
-} from "@plasmicapp/loader-react";
+} from "@structoapp/loader-react";
 export type {
   CodeComponentMeta,
   ComponentMeta,
@@ -22,10 +22,10 @@ export type {
   InitOptions,
   PageMeta,
   PageMetadata,
-  PlasmicTranslator,
+  StructoTranslator,
   PropType,
   TokenRegistration,
-} from "@plasmicapp/loader-react";
+} from "@structoapp/loader-react";
 export { createPages, createResolvers, sourceNodes } from "./gatsby-node";
 export { replaceRenderer } from "./gatsby-ssr";
-export { initPlasmicLoader } from "./loader";
+export { initStructoLoader } from "./loader";

@@ -1,4 +1,4 @@
-export { Api, PlasmicModulesFetcher } from "@plasmicapp/loader-fetcher";
+export { Api, StructoModulesFetcher } from "@structoapp/loader-fetcher";
 export type {
   AssetModule,
   CodeModule,
@@ -14,8 +14,8 @@ export type {
   ProjectMeta,
   SegmentSlice,
   Split,
-} from "@plasmicapp/loader-fetcher";
+} from "@structoapp/loader-fetcher";
 export { getBundleSubset } from "./bundles";
 export { Registry } from "./registry";
-export { PlasmicTracker } from "./tracker";
+export { StructoTracker } from "./tracker";
 export type { TrackRenderOptions } from "./tracker";

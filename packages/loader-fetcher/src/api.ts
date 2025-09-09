@@ -171,7 +171,7 @@ export class Api {
       manualRedirect?: boolean;
     }
   ) {
-    this.host = opts.host ?? "https://codegen.plasmic.app";
+    this.host = opts.host ?? "https://codegen.structo.app";
     this.fetch = (
       opts.nativeFetch && globalThis.fetch ? globalThis.fetch : unfetch
     ).bind(globalThis);
@@ -210,9 +210,6 @@ export class Api {
       preview ? "preview" : "published"
     }?${query}`;
 
-    // We only expect a redirect when we're dealing with published mode, as there should be
-    // a stable set of versions to be used. As in browser, we could receive a opaque response
-    // with a redirect, we don't try to use last response in browser.
     const useLastReponse =
       // We consider that manualRedirect is true by default, only by setting it to false
       // we disable it.
@@ -320,7 +317,7 @@ export class Api {
 
   private makeGetHeaders() {
     return {
-      "x-plasmic-loader-version": VERSION,
+      "x-structo-loader-version": VERSION,
       ...this.makeAuthHeaders(),
     };
   }
@@ -330,7 +327,7 @@ export class Api {
       .map((p) => `${p.id}:${p.token}`)
       .join(",");
     return {
-      "x-plasmic-api-project-tokens": tokens,
+      "x-structo-api-project-tokens": tokens,
     };
   }
 

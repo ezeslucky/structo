@@ -1,4 +1,4 @@
-export { describeVariation } from "@plasmicapp/loader-splits";
+export { describeVariation } from "@structoapp/loader-splits";
 export {
   generateAllPaths,
   generateAllPathsWithTraits,

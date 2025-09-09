@@ -17,5 +17,5 @@ export { Api } from "./api";
 export type { FetcherOptions, LoaderBundleCache } from "./fetcher";
 export {
   internal_getCachedBundleInNodeServer,
-  PlasmicModulesFetcher,
+  StructoModulesFetcher,
 } from "./fetcher";

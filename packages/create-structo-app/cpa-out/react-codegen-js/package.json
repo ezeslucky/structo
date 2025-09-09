@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.341",
-    "@plasmicapp/react-web": "^0.2.397",
+    "@structoapp/cli": "^1.2.0",
+    "@structoapp/react-web": "^1.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
