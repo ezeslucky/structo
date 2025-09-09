@@ -1,27 +1,27 @@
-import { ComponentMeta, LoaderBundleOutput } from "@plasmicapp/loader-core";
+import { ComponentMeta, LoaderBundleOutput } from "@structoapp/loader-core";
 import {
   convertBundlesToComponentRenderData,
   InitOptions,
-  initPlasmicLoader,
+  initStructoLoader,
   matchesPagePath,
-} from "@plasmicapp/loader-react";
-import type { PlasmicRemoteChangeWatcher as Watcher } from "@plasmicapp/watcher";
+} from "@structoapp/loader-react";
+import type { StructoRemoteChangeWatcher as Watcher } from "@structoapp/watcher";
 import { CreatePagesArgs, GatsbyNode, PluginOptions } from "gatsby";
 import serverRequire from "./server-require";
 
 export const onPreInit: GatsbyNode["onPreInit"] = ({ reporter }) =>
-  reporter.success("Loaded @plasmicapp/loader-gatsby");
+  reporter.success("Loaded @structoapp/loader-gatsby");
 
 export type GatsbyPluginOptions = PluginOptions &
   InitOptions & {
-    defaultPlasmicPage?: string;
+    defaultStructoPage?: string;
     ignorePaths?: string[];
   };
 
-const PLASMIC_NODE_NAME = "plasmicData";
+const STRUCTO_NODE_NAME = "structoData";
 
-const PLASMIC_DATA_TYPE = `
-  type ${PLASMIC_NODE_NAME} implements Node {
+const STRUCTO_DATA_TYPE = `
+  type ${STRUCTO_NODE_NAME} implements Node {
     name: String!
     displayName: String!
     projectId: String!
@@ -31,8 +31,8 @@ const PLASMIC_DATA_TYPE = `
   }
 
   type Query {
-    plasmicComponents(componentNames: [String]!): JSON
-    plasmicOptions: JSON
+    structoComponents(componentNames: [String]!): JSON
+    structoOptions: JSON
   }
 `;
 
@@ -50,34 +50,29 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
   let allComponents: any[] = [];
 
   const refreshData = async () => {
-    reporter.info(`[Plasmic Loader] - Creating nodes`);
+    reporter.info(`[Structo Loader] - Creating nodes`);
 
-    const PLASMIC = initPlasmicLoader({
+    const STRUCTO = initStructoLoader({
       projects: opts.projects,
       preview: opts.preview,
       host: opts.host,
       platform: "gatsby",
     });
 
-    const components = await PLASMIC.fetchComponents();
+    const components = await STRUCTO.fetchComponents();
 
     for (const component of allComponents) {
       const hasComponent = components.some((c) => c.name === component.name);
-      /**
-       * We shouldn't delete nodes that will be updated, if we delete all nodes
-       * and then create it again, this could case the graphql layer to have no
-       * plasmic data for some time, but this can be enough time to a re render
-       * causing components that call a graphql query to plasmic data to crash
-       * */
+      
       if (!hasComponent) {
         deleteNode(component);
-        reporter.verbose(`[Plasmic Loader] - Deleted node ${component.name}`);
+        reporter.verbose(`[Structo Loader] - Deleted node ${component.name}`);
       }
     }
 
     allComponents = [];
     for (const component of components) {
-      const renderData = await PLASMIC.fetchComponentData({
+      const renderData = await STRUCTO.fetchComponentData({
         name: component.name,
         projectId: component.projectId,
       });
@@ -88,13 +83,10 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
       };
 
       const componentMeta = {
-        // We use the same id as curComponent.id since loader-react might
-        // expect the id to match plasmic component uuid.
-        // id: getNodeId(component.projectId, component.name),
         parent: null,
         children: [],
         internal: {
-          type: PLASMIC_NODE_NAME,
+          type: STRUCTO_NODE_NAME,
           contentDigest: createContentDigest(curComponent),
         },
       };
@@ -103,7 +95,7 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
 
       createNode(componentNode);
       reporter.verbose(
-        `[Plasmic Loader] - Created component node ${component.name}`
+        `[Structo Loader] - Created component node ${component.name}`
       );
       allComponents.push(componentNode);
     }
@@ -116,10 +108,10 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
     });
 
     try {
-      const PlasmicRemoteChangeWatcher = serverRequire("@plasmicapp/watcher")
-        .PlasmicRemoteChangeWatcher as typeof Watcher;
+      const StructoRemoteChangeWatcher = serverRequire("@structoapp/watcher")
+        .StructoRemoteChangeWatcher as typeof Watcher;
 
-      const watcher = new PlasmicRemoteChangeWatcher({
+      const watcher = new StructoRemoteChangeWatcher({
         projects: opts.projects,
         host: opts.host,
       });
@@ -137,7 +129,7 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
         },
       });
     } catch (e) {
-      console.warn("Couldn't subscribe to Plasmic changes", e);
+      console.warn("Couldn't subscribe to Structo changes", e);
     }
   }
 
@@ -161,7 +153,7 @@ export const createResolvers: GatsbyNode["createResolvers"] = (
 ) => {
   createResolvers({
     Query: {
-      plasmicComponents: {
+      structoComponents: {
         type: "JSON",
         args: {
           componentNames: `[String]!`,
@@ -176,7 +168,7 @@ export const createResolvers: GatsbyNode["createResolvers"] = (
 
           const components = await getAllNodes(
             context.nodeModel,
-            PLASMIC_NODE_NAME
+            STRUCTO_NODE_NAME
           );
 
           const bundles: LoaderBundleOutput[] = [];
@@ -233,7 +225,7 @@ export const createResolvers: GatsbyNode["createResolvers"] = (
           return renderData;
         },
       },
-      plasmicOptions: {
+      structoOptions: {
         type: "JSON",
         resolve() {
           return {
@@ -250,30 +242,30 @@ export const createResolvers: GatsbyNode["createResolvers"] = (
 export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] =
   ({ actions }) => {
     const { createTypes } = actions;
-    createTypes(PLASMIC_DATA_TYPE);
+    createTypes(STRUCTO_DATA_TYPE);
   };
 
 interface LoaderGatsbyPluginOptions extends GatsbyPluginOptions {
-  defaultPlasmicPage: string;
+  defaultStructoPage: string;
 }
 
 export const createPages: GatsbyNode["createPages"] = async (
   { graphql, actions, reporter, store }: CreatePagesArgs,
   opts: LoaderGatsbyPluginOptions
 ) => {
-  const { defaultPlasmicPage } = opts;
+  const { defaultStructoPage } = opts;
 
   const ignorePaths = opts.ignorePaths || [];
 
-  if (defaultPlasmicPage) {
-    reporter.info(`[Plasmic Loader] - Creating pages`);
+  if (defaultStructoPage) {
+    reporter.info(`[Structo Loader] - Creating pages`);
 
     const { createPage, deletePage } = actions;
     const result = await graphql<{
-      allPlasmicData: { nodes: Array<{ path: string }> };
+      allStructoData: { nodes: Array<{ path: string }> };
     }>(`
       query {
-        allPlasmicData(filter: { isPage: { eq: true } }) {
+        allStructoData(filter: { isPage: { eq: true } }) {
           nodes {
             path
           }
@@ -281,9 +273,9 @@ export const createPages: GatsbyNode["createPages"] = async (
       }
     `);
 
-    const pages = result.data?.allPlasmicData.nodes;
+    const pages = result.data?.allStructoData.nodes;
     if (!pages) {
-      reporter.error(`[Plasmic Loader] - GraphQL did not return pages`);
+      reporter.error(`[Structo Loader] - GraphQL did not return pages`);
       return;
     }
 
@@ -306,9 +298,9 @@ export const createPages: GatsbyNode["createPages"] = async (
       }
       deletePage({
         path,
-        component: defaultPlasmicPage,
+        component: defaultStructoPage,
       });
-      reporter.verbose(`[Plasmic Loader] - Deleted page ${path}`);
+      reporter.verbose(`[Structo Loader] - Deleted page ${path}`);
     }
 
     allPaths = [];
@@ -322,10 +314,10 @@ export const createPages: GatsbyNode["createPages"] = async (
 
       createPage({
         path: page.path,
-        component: defaultPlasmicPage,
+        component: defaultStructoPage,
         context: {},
       });
-      reporter.verbose(`[Plasmic Loader] - Created page ${page.path}`);
+      reporter.verbose(`[Structo Loader] - Created page ${page.path}`);
     }
   }
 };

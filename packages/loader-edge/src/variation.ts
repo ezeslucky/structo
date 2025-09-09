@@ -1,16 +1,16 @@
-import type { Split } from "@plasmicapp/loader-fetcher";
+import type { Split } from "@structoapp/loader-fetcher";
 import {
   getActiveVariation as getActiveVariationSplits,
   getSeededRandomFunction,
-} from "@plasmicapp/loader-splits";
+} from "@structoapp/loader-splits";
 
 export const DELIMITER = "__pm__";
-export const PLASMIC_SEED = "plasmic_seed";
-const DEFAULT_PLASMIC_SEED_RANGE = 16;
+export const STRUCTO_SEED = "structo_seed";
+const DEFAULT_STRUCTO_SEED_RANGE = 16;
 
 type Traits = Record<string, string | number | boolean>;
 
-const getSeed = (seedRange: number = DEFAULT_PLASMIC_SEED_RANGE) => {
+const getSeed = (seedRange: number = DEFAULT_STRUCTO_SEED_RANGE) => {
   return `${Math.floor(Math.random() * seedRange)}`;
 };
 
@@ -54,7 +54,7 @@ export const rewriteWithTraits = (path: string, traits: Traits) => {
 
 export const generateAllPaths = (
   path: string,
-  seedRange: number = DEFAULT_PLASMIC_SEED_RANGE
+  seedRange: number = DEFAULT_STRUCTO_SEED_RANGE
 ) => {
   return generateAllPathsWithTraits(path, {}, seedRange);
 };
@@ -65,14 +65,14 @@ export const generateAllPaths = (
 export function generateAllPathsWithTraits(
   path: string,
   traitValues: Record<string, string[]> = {},
-  seedRange = DEFAULT_PLASMIC_SEED_RANGE
+  seedRange = DEFAULT_STRUCTO_SEED_RANGE
 ) {
   const traitsCombinations = [{}];
   traitsCombinations.push(
     ...Array(seedRange)
       .fill(0)
       .map((_, idx) => ({
-        [PLASMIC_SEED]: idx,
+        [STRUCTO_SEED]: idx,
       }))
   );
   for (const [trait, possibleValues] of Object.entries(traitValues)) {
@@ -100,19 +100,19 @@ export const getMiddlewareResponse = (opts: {
 
   const seedRange = Number.isInteger(opts.seedRange)
     ? opts.seedRange
-    : DEFAULT_PLASMIC_SEED_RANGE;
-  const seed = opts.cookies[PLASMIC_SEED] || getSeed(seedRange);
+    : DEFAULT_STRUCTO_SEED_RANGE;
+  const seed = opts.cookies[STRUCTO_SEED] || getSeed(seedRange);
 
   let traits = opts.traits;
   if (seedRange && seedRange > 0) {
     traits = {
       ...traits,
-      [PLASMIC_SEED]: seed,
+      [STRUCTO_SEED]: seed,
     };
 
-    if (!opts.cookies[PLASMIC_SEED]) {
+    if (!opts.cookies[STRUCTO_SEED]) {
       newCookies.push({
-        key: PLASMIC_SEED,
+        key: STRUCTO_SEED,
         value: seed,
       });
     }
@@ -140,7 +140,7 @@ export const getActiveVariation = (opts: {
     getKnownValue: () => undefined,
     updateKnownValue: () => null,
     getRandomValue: (key: string) => {
-      const rand = getSeededRandomFunction((traits[PLASMIC_SEED] ?? "") + key);
+      const rand = getSeededRandomFunction((traits[STRUCTO_SEED] ?? "") + key);
       return rand();
     },
   });

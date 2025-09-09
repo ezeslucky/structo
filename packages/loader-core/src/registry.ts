@@ -1,4 +1,4 @@
-import { LoaderBundleOutput } from "@plasmicapp/loader-fetcher";
+import { LoaderBundleOutput } from "@structoapp/loader-fetcher";
 
 const isBrowser =
   typeof window !== "undefined" &&
@@ -7,9 +7,9 @@ const isBrowser =
 
 function isModuleBundlePromiseSet(name: string) {
   return (
-    (globalThis as any).__PlasmicBundlePromises &&
-    !!(globalThis as any).__PlasmicBundlePromises[name] &&
-    !!(globalThis as any).__PlasmicBundlePromises[name].then
+    (globalThis as any).__StructoBundlePromises &&
+    !!(globalThis as any).__StructoBundlePromises[name] &&
+    !!(globalThis as any).__StructoBundlePromises[name].then
   );
 }
 
@@ -46,8 +46,8 @@ export class Registry {
     }
 
     if (
-      (globalThis as any).__PLASMIC_CHUNKS &&
-      !!(globalThis as any).__PLASMIC_CHUNKS[name]
+      (globalThis as any).__STRUCTO_CHUNKS &&
+      !!(globalThis as any).__STRUCTO_CHUNKS[name]
     ) {
       return true;
     }
@@ -70,14 +70,14 @@ export class Registry {
 
     if (
       !this.modules[name] &&
-      (globalThis as any).__PLASMIC_CHUNKS &&
-      !!(globalThis as any).__PLASMIC_CHUNKS[name]
+      (globalThis as any).__STRUCTO_CHUNKS &&
+      !!(globalThis as any).__STRUCTO_CHUNKS[name]
     ) {
-      this.modules[name] = (globalThis as any).__PLASMIC_CHUNKS[name];
+      this.modules[name] = (globalThis as any).__STRUCTO_CHUNKS[name];
     }
 
     if (!this.modules[name] && isModuleBundlePromiseSet(name)) {
-      throw (globalThis as any).__PlasmicBundlePromises[name];
+      throw (globalThis as any).__StructoBundlePromises[name];
     }
 
     if (!(name in this.modules)) {
@@ -109,7 +109,7 @@ export class Registry {
     try {
       func = new Function("require", "exports", code);
     } catch (err) {
-      throw new Error(`PLASMIC: Failed to create function for ${name}: ${err}`);
+      throw new Error(`STRUCTO: Failed to create function for ${name}: ${err}`);
     }
     const exports = {};
     this.loadedModules[name] = exports;
@@ -123,7 +123,7 @@ export class Registry {
         // Re-throw the Promise
         throw err;
       }
-      throw new Error(`PLASMIC: Failed to load ${name}: ${err}`);
+      throw new Error(`STRUCTO: Failed to load ${name}: ${err}`);
     }
     return exports;
   }
@@ -139,10 +139,10 @@ export class Registry {
         mod.code !== this.modules[mod.fileName]
       ) {
         this.modules[mod.fileName] = mod.code;
-        if (!(globalThis as any).__PLASMIC_CHUNKS) {
-          (globalThis as any).__PLASMIC_CHUNKS = {};
+        if (!(globalThis as any).__STRUCTO_CHUNKS) {
+          (globalThis as any).__STRUCTO_CHUNKS = {};
         }
-        (globalThis as any).__PLASMIC_CHUNKS[mod.fileName] = mod.code;
+        (globalThis as any).__STRUCTO_CHUNKS[mod.fileName] = mod.code;
         updated = true;
       }
     }

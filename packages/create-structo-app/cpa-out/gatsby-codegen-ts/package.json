@@ -2,7 +2,7 @@
   "name": "gatsby-codegen-ts",
   "version": "1.0.0",
   "private": true,
-  "description": "Plasmic app for 47tFXWjN2C4NyHFGGpaYQ3",
+  "description": "",
   "keywords": [
     "gatsby"
   ],
@@ -15,8 +15,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.341",
-    "@plasmicapp/react-web": "^0.2.397",
+    "@structoapp/cli": "^1.2.0",
+    "@structoapp/react-web": "^1.2.0",
     "gatsby": "^5.14.1",
     "gatsby-plugin-react-helmet": "^6.14.0",
     "react": "^18.2.0",

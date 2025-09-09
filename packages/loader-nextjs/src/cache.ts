@@ -1,6 +1,6 @@
-import { LoaderBundleOutput } from "@plasmicapp/loader-core";
-import type { InitOptions } from "@plasmicapp/loader-react/react-server-conditional";
-import type * as Watcher from "@plasmicapp/watcher";
+import { LoaderBundleOutput } from "@structoapp/loader-core";
+import type { InitOptions } from "@structoapp/loader-react/react-server-conditional";
+import type * as Watcher from "@structoapp/watcher";
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import path from "path";
 import { serverRequire, serverRequireFs } from "./server-require";
@@ -25,7 +25,7 @@ class FileCache {
     try {
       await fs.promises.writeFile(this.filePath, JSON.stringify(data));
     } catch (err) {
-      console.warn(`Error writing to Plasmic cache: ${err}`);
+      console.warn(`Error writing to Structo cache: ${err}`);
     }
   }
 
@@ -47,10 +47,10 @@ function hashString(str: string) {
 }
 
 function makeCache(opts: InitOptions) {
-  const cacheDir = path.resolve(process.cwd(), ".next", ".plasmic");
+  const cacheDir = path.resolve(process.cwd(), ".next", ".structo");
   const cachePath = path.join(
     cacheDir,
-    `plasmic-${hashString(
+    `structo-${hashString(
       [...opts.projects.map((p) => `${p.id}@${p.version ?? ""}`)]
         .sort()
         .join("-")
@@ -59,7 +59,7 @@ function makeCache(opts: InitOptions) {
   return new FileCache(cachePath);
 }
 
-export function initPlasmicLoaderWithCache<
+export function initStructoLoaderWithCache<
   T extends {
     clearCache(): void;
   }
@@ -81,41 +81,34 @@ export function initPlasmicLoaderWithCache<
         appDir: !!nextNavigation,
       },
     },
-    // For Nextjs 12, revalidate may in fact re-use an existing instance
-    // of PlasmicComponentLoader that's already in memory, so we need to
-    // make sure we don't re-use the data cached in memory.
-    // We also enforce this for dev mode, so that we don't have to restart
-    // the dev server, in case getStaticProps() re-uses the same PlasmicComponentLoader
-    // We also enforce that during build phase, we re-use the data cached in memory
-    // to avoid re-fetching the data from Plasmic servers.
     alwaysFresh: !isBuildPhase && !isBrowser,
   });
 
   if (!isProd) {
     const stringOpts = JSON.stringify(opts);
 
-    if (process.env.PLASMIC_OPTS && process.env.PLASMIC_OPTS !== stringOpts) {
+    if (process.env.STRUCTO_OPTS && process.env.STRUCTO_OPTS !== stringOpts) {
       console.warn(
-        `PLASMIC: We detected that you created a new PlasmicLoader with different configurations. You may need to restart your dev server.\n`
+        `STRUCTO: We detected that you created a new StructoLoader with different configurations. You may need to restart your dev server.\n`
       );
     }
 
-    process.env.PLASMIC_OPTS = stringOpts;
+    process.env.STRUCTO_OPTS = stringOpts;
   }
 
   if (cache) {
     if (!isProd) {
-      if (process.env.PLASMIC_WATCHED !== "true") {
+      if (process.env.STRUCTO_WATCHED !== "true") {
         (async () => {
-          process.env.PLASMIC_WATCHED = "true";
-          console.log(`Subscribing to Plasmic changes...`);
+          process.env.STRUCTO_WATCHED = "true";
+          console.log(`Subscribing to Structo changes...`);
 
           // Import using serverRequire, so webpack doesn't bundle us into client bundle
           try {
-            const PlasmicRemoteChangeWatcher = (
-              await serverRequire<typeof Watcher>("@plasmicapp/watcher")
-            ).PlasmicRemoteChangeWatcher;
-            const watcher = new PlasmicRemoteChangeWatcher({
+            const StructoRemoteChangeWatcher = (
+              await serverRequire<typeof Watcher>("@structoapp/watcher")
+            ).StructoRemoteChangeWatcher;
+            const watcher = new StructoRemoteChangeWatcher({
               projects: opts.projects,
               host: opts.host,
             });
@@ -138,7 +131,7 @@ export function initPlasmicLoaderWithCache<
               },
             });
           } catch (e) {
-            console.warn("Couldn't subscribe to Plasmic changes", e);
+            console.warn("Couldn't subscribe to Structo changes", e);
           }
         })();
       }

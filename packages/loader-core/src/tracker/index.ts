@@ -1,10 +1,4 @@
-// Intentionally no imports – this module is now a strict no-op while
-// preserving the public API surface.
 
-/**
- * @deprecated Built-in tracking is disabled. This type remains only for
- * compatibility and will be removed in a future release.
- */
 export interface TrackerOptions {
   projectIds: string[];
   platform?: string;
@@ -12,12 +6,7 @@ export interface TrackerOptions {
   nativeFetch?: boolean;
 }
 
-// Internal event types removed along with implementation details.
 
-/**
- * @deprecated Built-in tracking is disabled. This type remains only for
- * compatibility and will be removed in a future release.
- */
 export interface TrackerRenderProperties {
   rootProjectId?: string;
   rootComponentId?: string;
@@ -26,22 +15,14 @@ export interface TrackerRenderProperties {
   projectIds: string[];
 }
 
-/**
- * @deprecated Built-in tracking is disabled. This type remains only for
- * compatibility and will be removed in a future release.
- */
+
 export interface TrackRenderOptions {
   renderCtx?: TrackerRenderProperties;
   variation?: Record<string, string>;
 }
 
-/**
- * @deprecated Built-in tracking is disabled. This class remains only for
- * compatibility and will be removed in a future release.
- *
- * All methods are strict no-ops.
- */
-export class PlasmicTracker {
+
+export class StructoTracker {
   // Preserve constructor signature for compatibility, but do not retain
   // instance state to avoid unused-property diagnostics.
   constructor(_opts: TrackerOptions) {}

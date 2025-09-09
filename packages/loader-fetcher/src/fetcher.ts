@@ -33,7 +33,7 @@ export interface LoaderBundleCache {
   get: () => Promise<LoaderBundleOutput>;
 }
 
-export class PlasmicModulesFetcher {
+export class StructoModulesFetcher {
   private api: Api;
   private curFetch: Promise<LoaderBundleOutput> | undefined = undefined;
   constructor(private opts: FetcherOptions) {
@@ -53,12 +53,7 @@ export class PlasmicModulesFetcher {
     // getCachedOrFetched uses a cache defined by the user.
     const bundle = await this.getCachedOrFetch();
 
-    // For React Server Components (Next.js 13+),
-    // we need to pass server modules in LoaderBundleOutput from Server Components to Client Components.
-    // We don't want to pass them via normal page props because that will be serialized to the browser.
-    // Instead, we pass the bundle (including the server modules) via the Node `global` variable.
-    //
-    // cacheBundleInNodeServer caches a bundle in the Node server process.
+    
     this.cacheBundleInNodeServer(bundle);
 
     return bundle;
@@ -74,8 +69,8 @@ export class PlasmicModulesFetcher {
     if (this.curFetch) {
       return await this.curFetch;
     }
-    if (typeof process === "undefined" || !process.env?.PLASMIC_QUIET) {
-      console.debug("Plasmic: doing a fresh fetch...");
+    if (typeof process === "undefined" || !process.env?.STRUCTO_QUIET) {
+      console.debug("Structo: doing a fresh fetch...");
     }
     const fetchPromise = this.doFetch();
     this.curFetch = fetchPromise;
@@ -108,9 +103,9 @@ export class PlasmicModulesFetcher {
     if (this.opts.cache) {
       await this.opts.cache.set(data);
     }
-    if (typeof process === "undefined" || !process.env?.PLASMIC_QUIET) {
+    if (typeof process === "undefined" || !process.env?.STRUCTO_QUIET) {
       console.debug(
-        `Plasmic: fetched designs for ${data.projects
+        `Structo: fetched designs for ${data.projects
           .map((p) => `"${p.name}" (${p.id}@${p.version})`)
           .join(", ")}`
       );
@@ -124,10 +119,10 @@ export class PlasmicModulesFetcher {
     }
 
     const global = globalThis as GlobalWithBundles;
-    if (global.__PLASMIC_BUNDLES === undefined) {
-      global.__PLASMIC_BUNDLES = {};
+    if (global.__STRUCTO_BUNDLES === undefined) {
+      global.__STRUCTO_BUNDLES = {};
     }
-    global.__PLASMIC_BUNDLES[getBundleKey(this.opts)] = bundle;
+    global.__STRUCTO_BUNDLES[getBundleKey(this.opts)] = bundle;
   }
 }
 
@@ -139,7 +134,7 @@ export function internal_getCachedBundleInNodeServer(
   }
 
   const global = globalThis as GlobalWithBundles;
-  return global.__PLASMIC_BUNDLES?.[getBundleKey(opts)];
+  return global.__STRUCTO_BUNDLES?.[getBundleKey(opts)];
 }
 
 function getBundleKey({
@@ -161,5 +156,5 @@ function getBundleKey({
 }
 
 interface GlobalWithBundles {
-  __PLASMIC_BUNDLES?: { [bundleKey: string]: LoaderBundleOutput };
+  __STRUCTO_BUNDLES?: { [bundleKey: string]: LoaderBundleOutput };
 }

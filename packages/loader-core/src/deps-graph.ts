@@ -1,4 +1,4 @@
-import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
+import { LoaderBundleOutput } from '@structoapp/loader-fetcher';
 
 export class DepsGraph {
   private dependsOn: Record<string, string[]> = {};
