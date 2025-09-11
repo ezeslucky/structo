@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { usePlasmicRootContext } from './PlasmicRootProvider';
+import { useStructoRootContext } from './StructoRootProvider';
 import {
   ComponentLookupSpec,
   useForceUpdate,
@@ -7,24 +7,15 @@ import {
   useStableLookupSpec,
 } from './utils';
 
-/**
- * Hook that fetches and returns a React component for rendering the argument
- * Plasmic component.  Returns undefined if the component data is still
- * being fetched.
- *
- * @param opts.forceOriginal if you used PlasmicComponentLoader.registerComponent,
- *   then normally usePlasmicComponent will return the registered component.
- *   You can set forceOriginal to true if you want to return the Plasmic-generated
- *   component instead.
- */
-export function usePlasmicComponent<P extends React.ComponentType = any>(
+
+export function useStructoComponent<P extends React.ComponentType = any>(
   spec: ComponentLookupSpec,
   opts: { forceOriginal?: boolean } = {}
 ) {
-  const rootContext = usePlasmicRootContext();
+  const rootContext = useStructoRootContext();
   if (!rootContext) {
     throw new Error(
-      `You can only use usePlasmicComponent if wrapped in <PlasmicRootProvider />`
+      `You can only use useStructoComponent if wrapped in <StructoRootProvider />`
     );
   }
 

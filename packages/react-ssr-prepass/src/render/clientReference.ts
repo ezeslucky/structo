@@ -57,7 +57,7 @@ const render = (
   } catch (error) {
     if (!(error instanceof Promise)) {
       console.warn(
-        `PLASMIC: Encountered error when pre-rendering client reference: ${error}`
+        `STRUCTO: Encountered error when pre-rendering client reference: ${error}`
       )
       return null
     }

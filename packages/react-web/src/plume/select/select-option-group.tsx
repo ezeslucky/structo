@@ -6,16 +6,16 @@ import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import { renderCollectionNode, SectionLikeProps } from "../collection-utils";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   PLUME_STRICT_MODE,
   VariantDef,
 } from "../plume-utils";
 import {
-  getDefaultPlasmicProps,
+  getDefaultStructoProps,
   getStyleProps,
   StyleProps,
 } from "../props-utils";
@@ -25,23 +25,23 @@ export interface BaseSelectOptionGroupProps
   extends SectionLikeProps,
     StyleProps {}
 
-interface SelectOptionGroupConfig<C extends AnyPlasmicClass> {
-  noTitleVariant: VariantDef<PlasmicClassVariants<C>>;
-  isFirstVariant: VariantDef<PlasmicClassVariants<C>>;
+interface SelectOptionGroupConfig<C extends AnyStructoClass> {
+  noTitleVariant: VariantDef<StructoClassVariants<C>>;
+  isFirstVariant: VariantDef<StructoClassVariants<C>>;
 
-  optionsSlot: keyof PlasmicClassArgs<C>;
-  titleSlot: keyof PlasmicClassArgs<C>;
+  optionsSlot: keyof StructoClassArgs<C>;
+  titleSlot: keyof StructoClassArgs<C>;
 
-  root: keyof PlasmicClassOverrides<C>;
-  separator: keyof PlasmicClassOverrides<C>;
-  titleContainer: keyof PlasmicClassOverrides<C>;
-  optionsContainer: keyof PlasmicClassOverrides<C>;
+  root: keyof StructoClassOverrides<C>;
+  separator: keyof StructoClassOverrides<C>;
+  titleContainer: keyof StructoClassOverrides<C>;
+  optionsContainer: keyof StructoClassOverrides<C>;
 }
 
 export function useSelectOptionGroup<
   P extends BaseSelectOptionGroupProps,
-  C extends AnyPlasmicClass
->(plasmicClass: C, props: P, config: SelectOptionGroupConfig<C>) {
+  C extends AnyStructoClass
+>(structoClass: C, props: P, config: SelectOptionGroupConfig<C>) {
   const state = React.useContext(SelectContext);
 
   // `node` should exist if the OptionGroup was instantiated properly
@@ -56,7 +56,7 @@ export function useSelectOptionGroup<
         "You can only use a Select.OptionGroup within a Select component."
       );
     }
-    return getDefaultPlasmicProps(plasmicClass, props);
+    return getDefaultStructoProps(structoClass, props);
   }
 
   const { headingProps, groupProps } = useListBoxSection({
@@ -69,7 +69,7 @@ export function useSelectOptionGroup<
   });
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.noTitleVariant, active: !props.title },
       {
@@ -80,7 +80,7 @@ export function useSelectOptionGroup<
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     [config.titleSlot]: props.title,
     [config.optionsSlot]: Array.from(node.childNodes).map((childNode) =>
       renderCollectionNode(childNode)
@@ -113,10 +113,10 @@ export function useSelectOptionGroup<
   };
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
   };
 }

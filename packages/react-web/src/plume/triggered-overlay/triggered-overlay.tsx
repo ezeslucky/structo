@@ -1,4 +1,4 @@
-import { usePlasmicCanvasContext } from "@plasmicapp/host";
+import { useStructoCanvasContext } from "@structoapp/host";
 import { FocusScope } from "@react-aria/focus";
 import {
   DismissButton,
@@ -16,16 +16,16 @@ import {
 } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   PLUME_STRICT_MODE,
   VariantDef,
 } from "../plume-utils";
 import {
-  getDefaultPlasmicProps,
+  getDefaultStructoProps,
   getStyleProps,
   StyleProps,
 } from "../props-utils";
@@ -35,23 +35,23 @@ export interface BaseTriggeredOverlayProps extends StyleProps, DOMProps {
   children?: React.ReactNode;
 }
 
-export interface TriggeredOverlayConfig<C extends AnyPlasmicClass> {
-  isPlacedTopVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isPlacedBottomVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isPlacedLeftVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isPlacedRightVariant?: VariantDef<PlasmicClassVariants<C>>;
+export interface TriggeredOverlayConfig<C extends AnyStructoClass> {
+  isPlacedTopVariant?: VariantDef<StructoClassVariants<C>>;
+  isPlacedBottomVariant?: VariantDef<StructoClassVariants<C>>;
+  isPlacedLeftVariant?: VariantDef<StructoClassVariants<C>>;
+  isPlacedRightVariant?: VariantDef<StructoClassVariants<C>>;
 
-  contentSlot: keyof PlasmicClassArgs<C>;
-  root: keyof PlasmicClassOverrides<C>;
+  contentSlot: keyof StructoClassArgs<C>;
+  root: keyof StructoClassOverrides<C>;
 }
 
 export type TriggeredOverlayRef = React.Ref<HTMLElement>;
 
 export function useTriggeredOverlay<
   P extends BaseTriggeredOverlayProps,
-  C extends AnyPlasmicClass
+  C extends AnyStructoClass
 >(
-  plasmicClass: C,
+  structoClass: C,
   props: P,
   config: TriggeredOverlayConfig<C>,
   outerRef: TriggeredOverlayRef = null,
@@ -79,7 +79,7 @@ export function useTriggeredOverlay<
         "You can only use a triggered overlay with a TriggeredOverlayContext"
       );
     }
-    return getDefaultPlasmicProps(plasmicClass, props);
+    return getDefaultStructoProps(structoClass, props);
   }
 
   const { children } = props;
@@ -164,7 +164,7 @@ export function useTriggeredOverlay<
   );
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.isPlacedTopVariant, active: placementAxis === "top" },
       { def: config.isPlacedBottomVariant, active: placementAxis === "bottom" },
@@ -173,9 +173,9 @@ export function useTriggeredOverlay<
     ),
   };
 
-  const canvasCtx = usePlasmicCanvasContext();
+  const canvasCtx = useStructoCanvasContext();
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     [config.contentSlot]:
       canvasCtx && !canvasCtx.interactive ? (
         children
@@ -207,10 +207,10 @@ export function useTriggeredOverlay<
   };
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
   };
 }

@@ -11,23 +11,23 @@ import type {
   useDataEnv,
   useSelector,
   useSelectors,
-} from "@plasmicapp/host";
+} from "@structoapp/host";
 import {
   LoaderBundleCache,
   PageMeta,
-  PlasmicModulesFetcher,
+  StrutoModulesFetcher,
   Registry,
   TrackRenderOptions,
-} from "@plasmicapp/loader-core";
+} from "@structoapp/loader-core";
 import {
   CodeModule,
   ComponentMeta,
   LoaderBundleOutput,
   internal_getCachedBundleInNodeServer,
-} from "@plasmicapp/loader-fetcher";
-import { getActiveVariation, getExternalIds } from "@plasmicapp/loader-splits";
-import type { useMutablePlasmicQueryData } from "@plasmicapp/query";
-import type { GlobalVariantSpec } from "./PlasmicRootProvider";
+} from "@structoapp/loader-fetcher";
+import { getActiveVariation, getExternalIds } from "@structoapp/loader-splits";
+import type { useMutableStructoQueryData } from "@structoapp/query";
+import type { GlobalVariantSpec } from "./StructoRootProvider";
 import { mergeBundles, prepComponentData } from "./bundles";
 import { ComponentLookup } from "./component-lookup";
 import {
@@ -38,7 +38,7 @@ import {
   isDynamicPagePath,
   uniq,
 } from "./utils";
-import { getPlasmicCookieValues, updatePlasmicCookieValue } from "./variation";
+import { getStructoCookieValues, updateStructoCookieValue } from "./variation";
 
 export interface InitOptions {
   projects: {
@@ -65,27 +65,16 @@ export interface InitOptions {
    */
   i18nKeyScheme?: "content" | "hash";
 
-  /**
-   * By default, fetchComponentData() and fetchPages() calls cached in memory
-   * with the PlasmicComponentLoader instance.  If alwaysFresh is true, then
-   * data is always freshly fetched over the network.
-   */
+  
   alwaysFresh?: boolean;
 
-  /**
-   * If true, generated code from the server won't include page metadata tags
-   */
+ 
   skipHead?: boolean;
 
-  /**
-   * If true, uses browser / node's native fetch
-   */
+  
   nativeFetch?: boolean;
 
-  /**
-   * If true, will not redirect to the codegen server automatically, and will
-   * try to reuse the existing bundle in the cache.
-   */
+ 
   manualRedirect?: boolean;
 }
 
@@ -103,7 +92,7 @@ export interface ComponentSubstitutionSpec {
   >;
 }
 
-export interface PlasmicRootWatcher {
+export interface StructoRootWatcher {
   onDataFetched?: () => void;
 }
 
@@ -124,9 +113,9 @@ export interface ReactServerOps {
   /**
    * Allows data fetching from the code component and caching the result,
    * which will be stored in the `queryCache` returned by
-   * `extractPlasmicQueryData`.
+   * `extractstructoQueryData`.
    */
-  fetchData: typeof useMutablePlasmicQueryData;
+  fetchData: typeof useMutableStructoQueryData;
 }
 
 /**
@@ -137,29 +126,15 @@ export interface ServerProvidedData {
   data: any;
 }
 
-/**
- * Provides a new value for a given context key, similar to Context.Provider.
- * The context itself is not available (RSC doesn't allow calling
- * `createContext`) so each context will need to be represented as a unique
- * "context key". Also it means the default context value is not available
- * in case no value is passed (and reading that context will return `undefined`)
- */
+
 export interface ServerProvidedContext {
-  /**
-   * Identifier to the context, required to read it later via
-   * `ReactServerOps.readContext()`.
-   */
+  
   contextKey: string;
-  /**
-   * Context value being provided (similar to `Context.Provider`).
-   */
+ 
   value: any;
 }
 
-/**
- *  Each child of a code component might receive separate `DataProvider` and
- *  Context values.
- */
+
 export interface ServerChildData {
   providedData?: ServerProvidedData | ServerProvidedData[];
   providedContexts?: ServerProvidedContext | ServerProvidedContext[];
@@ -167,11 +142,7 @@ export interface ServerChildData {
 }
 
 export interface ServerInfo {
-  /**
-   * Optional: Indicates the React Nodes created by the component and the
-   * respective contexts provided to them. If not specified, it will render the
-   * children passed to the component as props.
-   */
+ 
   children?: ServerChildData | ServerChildData[];
   providedData?: ServerProvidedData | ServerProvidedData[];
   providedContexts?: ServerProvidedContext | ServerProvidedContext[];
@@ -181,22 +152,12 @@ export type CodeComponentMeta<P> = Omit<
   InternalCodeComponentMeta<P>,
   "importPath" | "componentHelpers" | "states"
 > & {
-  /**
-   * The path to be used when importing the component in the generated code.
-   * It can be the name of the package that contains the component, or the path
-   * to the file in the project (relative to the root directory).
-   * Optional: not used by Plasmic headless API, only by codegen.
-   */
+ 
   importPath?: string;
-  /**
-   * The states helpers are registered together with the states for the Plasmic headless API
-   */
+  
   states?: Record<string, StateSpec<P> & StateHelpers<P, any>>;
 
-  /**
-   * Helper function to enable data extraction when running Plasmic from
-   * Next.js App Router.
-   */
+  
   getServerInfo?: (props: P, ops: ReactServerOps) => ServerInfo;
 };
 
@@ -204,12 +165,7 @@ export type GlobalContextMeta<P> = Omit<
   InternalGlobalContextMeta<P>,
   "importPath"
 > & {
-  /**
-   * The path to be used when importing the component in the generated code.
-   * It can be the name of the package that contains the component, or the path
-   * to the file in the project (relative to the root directory).
-   * Optional: not used by Plasmic headless API, only by codegen.
-   */
+ 
   importPath?: string;
 };
 
@@ -217,21 +173,12 @@ export type CustomFunctionMeta<F extends (...args: any[]) => any> = Omit<
   InternalCustomFunctionMeta<F>,
   "importPath"
 > & {
-  /**
-   * The path to be used when importing the function in the generated code.
-   * It can be the name of the package that contains the function, or the path
-   * to the file in the project (relative to the root directory).
-   * Optional: not used by Plasmic headless API, only by codegen.
-   */
+ 
   importPath?: string;
 };
 
 export type FetchPagesOpts = {
-  /**
-   * Whether to include dynamic pages in fetchPages() output. A page is
-   * considered dynamic if its path contains some param between brackets,
-   * e.g. "[slug]".
-   */
+ 
   includeDynamicPages?: boolean;
 };
 
@@ -269,10 +216,10 @@ interface BuiltinRegisteredModules {
   "react-dom": typeof import("react-dom");
   "react/jsx-runtime": typeof import("react/jsx-runtime");
   "react/jsx-dev-runtime": typeof import("react/jsx-dev-runtime");
-  "@plasmicapp/query": typeof import("@plasmicapp/query");
-  "@plasmicapp/data-sources-context": typeof import("@plasmicapp/data-sources-context");
-  "@plasmicapp/host": typeof import("@plasmicapp/host");
-  "@plasmicapp/loader-runtime-registry": {
+  "@structoapp/query": typeof import("@structoapp/query");
+  "@structoapp/data-sources-context": typeof import("@structoapp/data-sources-context");
+  "@structoapp/host": typeof import("@structoapp/host");
+  "@structoapp/loader-runtime-registry": {
     components: Record<string, React.ComponentType<any>>;
     globalVariantHooks: Record<string, () => any>;
     codeComponentHelpers: Record<string, ComponentHelpers<any>>;
@@ -281,20 +228,7 @@ interface BuiltinRegisteredModules {
 }
 
 export interface FetchComponentDataOpts {
-  /**
-   * Will fetch either code targeting SSR or browser hydration in the
-   * returned bundle.
-   *
-   * By default, the target is browser. That's okay, because even when
-   * doing SSR, as long as you are using the same instance of PlasmicLoader
-   * that was used to fetch component data, it will still know how to get at
-   * the server code.
-   *
-   * But, if you are building your own SSR solution, where fetching and rendering
-   * are using different instances of PlasmicLoader, then you'll want to make
-   * sure that when you fetch, you are fetching the right one to be used in the
-   * right environment for either SSR or browser hydration.
-   */
+ 
   target?: "server" | "browser";
 }
 
@@ -320,10 +254,10 @@ function parseFetchComponentDataArgs(...args: any[]) {
 }
 
 /** Subset of loader functionality that works on Client and React Server Components. */
-export abstract class BaseInternalPlasmicComponentLoader {
+export abstract class BaseInternalStructoComponentLoader {
   public readonly opts: InitOptions;
   private readonly registry = new Registry();
-  private readonly fetcher: PlasmicModulesFetcher;
+  private readonly fetcher: StructoModulesFetcher;
   private readonly onBundleMerged?: () => void;
   private readonly onBundleFetched?: () => void;
   private globalVariants: GlobalVariantSpec[] = [];
@@ -346,7 +280,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
 
   constructor(args: {
     opts: InitOptions;
-    fetcher: PlasmicModulesFetcher;
+    fetcher: StructoModulesFetcher;
     /** Called after `mergeBundle` (including `fetch` calls). */
     onBundleMerged?: () => void;
     /** Called after any `fetch` calls. */
@@ -438,7 +372,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
 
   async fetchPages(opts?: FetchPagesOpts) {
     this.maybeReportClientSideFetch(
-      () => `Plasmic: fetching all page metadata in the browser`
+      () => `Structo: fetching all page metadata in the browser`
     );
     const data = await this.fetchAllData();
     return data.components.filter(
@@ -451,7 +385,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
 
   async fetchComponents() {
     this.maybeReportClientSideFetch(
-      () => `Plasmic: fetching all component metadata in the browser`
+      () => `Structo: fetching all component metadata in the browser`
     );
     const data = await this.fetchAllData();
     return data.components;
@@ -471,7 +405,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
     // TODO: do better than just fetching everything
     this.maybeReportClientSideFetch(
       () =>
-        `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
+        `Structo: fetching missing components in the browser: ${opts.missingSpecs
           .map((spec) => getLookupSpecName(spec))
           .join(", ")}`
     );
@@ -504,7 +438,7 @@ export abstract class BaseInternalPlasmicComponentLoader {
       newBundle.bundleKey !== this.bundle.bundleKey
     ) {
       console.warn(
-        `Plasmic Error: Different code export hashes. This can happen if your app is using different loaders with different project IDs or project versions.
+        `Structo Error: Different code export hashes. This can happen if your app is using different loaders with different project IDs or project versions.
 Conflicting values:
 ${newBundle.bundleKey}
 ${this.bundle.bundleKey}`
@@ -548,7 +482,7 @@ ${this.bundle.bundleKey}`
     ) {
       if (!this.registry.isEmpty()) {
         console.warn(
-          "Calling PlasmicComponentLoader.registerModules() after Plasmic component has rendered; starting over."
+          "Calling StructoComponentLoader.registerModules() after Structo component has rendered; starting over."
         );
         this.registry.clear();
       }
@@ -576,7 +510,7 @@ ${this.bundle.bundleKey}`
   ) {
     if (!this.isRegistryEmpty()) {
       console.warn(
-        "Calling PlasmicComponentLoader.registerSubstitution() after Plasmic component has rendered; starting over."
+        "Calling StructoComponentLoader.registerSubstitution() after Structo component has rendered; starting over."
       );
       this.clearRegistry();
     }
@@ -633,12 +567,7 @@ ${this.bundle.bundleKey}`
   }
 
   registerPrefetchedBundle(bundle: LoaderBundleOutput) {
-    // For React Server Components (Next.js 13+),
-    // we need to pass server modules in LoaderBundleOutput from Server Components to Client Components.
-    // We don't want to pass them via normal page props because that will be serialized to the browser.
-    // Instead, we pass the bundle (including the server modules) via the Node `global` variable.
-    //
-    // This is the code that reads the stored bundle and merges it back into the loader.
+    
     if (!isBrowser) {
       // Check if we have a cached bundle on this Node server.
       const cachedBundle = internal_getCachedBundleInNodeServer(this.opts);
@@ -699,21 +628,14 @@ ${this.bundle.bundleKey}`
  * Library for fetching component data, and registering
  * custom components.
  */
-export class PlasmicComponentLoader {
-  private __internal: BaseInternalPlasmicComponentLoader;
+export class StructoComponentLoader {
+  private __internal: BaseInternalStructoComponentLoader;
 
-  constructor(internal: BaseInternalPlasmicComponentLoader) {
+  constructor(internal: BaseInternalStructoComponentLoader) {
     this.__internal = internal;
   }
 
-  /**
-   * Sets global variants to be used for all components.  Note that
-   * this is not reactive, and will not re-render all components
-   * already mounted; instead, it should be used to activate global
-   * variants that should always be activated for the lifetime of this
-   * app.  If you'd like to reactively change the global variants,
-   * you should specify them via <PlasmicRootProvider />
-   */
+  
   setGlobalVariants(globalVariants: GlobalVariantSpec[]) {
     this.__internal.setGlobalVariants(globalVariants);
   }
@@ -722,11 +644,7 @@ export class PlasmicComponentLoader {
     this.__internal.registerModules(modules);
   }
 
-  /**
-   * Register custom components that should be swapped in for
-   * components defined in your project.  You can use this to
-   * swap in / substitute a Plasmic component with a "real" component.
-   */
+  
   substituteComponent<P>(
     component: React.ComponentType<P>,
     name: ComponentLookupSpec
@@ -735,20 +653,14 @@ export class PlasmicComponentLoader {
   }
 
   /**
-   * Register code components to be used on Plasmic Editor.
+   * Register code components to be used on structo Editor.
    */
   registerComponent<T extends React.ComponentType<any>>(
     component: T,
     meta: CodeComponentMeta<React.ComponentProps<T>>
   ): void;
 
-  /**
-   * [[deprecated]] Please use `substituteComponent` instead for component
-   * substitution, or the other `registerComponent` overload to register
-   * code components to be used on Plasmic Editor.
-   *
-   * @see `substituteComponent`
-   */
+ 
   registerComponent<T extends React.ComponentType<any>>(
     component: T,
     name: ComponentLookupSpec
@@ -768,7 +680,7 @@ export class PlasmicComponentLoader {
         !this.warnedRegisterComponent
       ) {
         console.warn(
-          `PlasmicLoader: Using deprecated method \`registerComponent\` for component substitution. ` +
+          `StructoLoader: Using deprecated method \`registerComponent\` for component substitution. ` +
             `Please consider using \`substituteComponent\` instead.`
         );
         this.warnedRegisterComponent = true;
@@ -800,21 +712,7 @@ export class PlasmicComponentLoader {
     this.__internal.registerToken(token);
   }
 
-  /**
-   * Pre-fetches component data needed to for PlasmicLoader to render
-   * these components.  Should be passed into PlasmicRootProvider as
-   * the prefetchedData prop.
-   *
-   * You can look up a component either by:
-   * - the name of the component
-   * - the path for a page component
-   * - an array of strings that make up parts of the path
-   * - object { name: "name_or_path", projectId: ...}, to specify which project
-   *   to use, if multiple projects have the same component name
-   *
-   * Throws an Error if a specified component to fetch does not exist in
-   * the Plasmic project.
-   */
+ 
   fetchComponentData(
     ...specs: ComponentLookupSpec[]
   ): Promise<ComponentRenderData>;
@@ -826,11 +724,7 @@ export class PlasmicComponentLoader {
     return this.__internal.fetchComponentData(...args);
   }
 
-  /**
-   * Like fetchComponentData(), but returns null instead of throwing an Error
-   * when a component is not found.  Useful when you are implementing a catch-all
-   * page and want to check if a specific path had been defined for Plasmic.
-   */
+  
   async maybeFetchComponentData(
     ...specs: ComponentLookupSpec[]
   ): Promise<ComponentRenderData | null>;
@@ -874,13 +768,13 @@ export class PlasmicComponentLoader {
         if (opts.known) {
           return opts.known[key];
         } else {
-          const cookies = getPlasmicCookieValues();
+          const cookies = getStructoCookieValues();
           return cookies[key];
         }
       },
       updateKnownValue: (key: string, value: string) => {
         if (!opts.known) {
-          updatePlasmicCookieValue(key, value);
+          updateStructoCookieValue(key, value);
         }
       },
     });

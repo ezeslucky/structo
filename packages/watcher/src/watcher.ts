@@ -1,26 +1,26 @@
 import socketio from "socket.io-client";
 
-export interface PlasmicRemoteChangeListener {
+export interface StructoRemoteChangeListener {
   onUpdate?: (projectId: string, revision: number) => void;
   onPublish?: (projectId: string, version: string) => void;
   onError?: (data: any) => void;
 }
 
-export class PlasmicRemoteChangeWatcher {
-  private watchers: PlasmicRemoteChangeListener[] = [];
+export class StructoRemoteChangeWatcher {
+  private watchers: StructoRemoteChangeListener[] = [];
   private socket: ReturnType<typeof socketio> | undefined = undefined;
   private host: string;
 
-  constructor(
+constructor(
     private opts: {
       projects: { id: string; token: string }[];
       host?: string;
     }
   ) {
-    this.host = opts.host ?? "https://studio.plasmic.app";
+    this.host = opts.host ?? "https://studio.structo.app";
   }
 
-  subscribe(watcher: PlasmicRemoteChangeListener) {
+  subscribe(watcher: StructoRemoteChangeListener) {
     this.watchers.push(watcher);
     this.ensureWatch();
     return () => {
@@ -28,7 +28,7 @@ export class PlasmicRemoteChangeWatcher {
     };
   }
 
-  unsubscribe(watcher: PlasmicRemoteChangeListener) {
+  unsubscribe(watcher: StructoRemoteChangeListener) {
     const index = this.watchers.indexOf(watcher);
     if (index >= 0) {
       this.watchers.splice(index, 1);
@@ -56,7 +56,7 @@ export class PlasmicRemoteChangeWatcher {
       .map((p) => `${p.id}:${p.token}`)
       .join(",");
     return {
-      "x-plasmic-api-project-tokens": tokens,
+      "x-structo-api-project-tokens": tokens,
     };
   }
 

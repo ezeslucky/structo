@@ -1,20 +1,20 @@
-import type { TokenRegistration, TraitMeta } from "@plasmicapp/host";
-import { PlasmicModulesFetcher } from "@plasmicapp/loader-core";
+import type { TokenRegistration, TraitMeta } from "@structoapp/host";
+import { StructoModulesFetcher } from "@structoapp/loader-core";
 import type {
-  PlasmicPrepassContext,
-  useMutablePlasmicQueryData,
-} from "@plasmicapp/query";
+  StructoPrepassContext,
+  useMutableStructoQueryData,
+} from "@structoapp/query";
 import React from "react";
 import ReactDOM from "react-dom";
 import * as jsxDevRuntime from "react/jsx-dev-runtime";
 import * as jsxRuntime from "react/jsx-runtime";
-import type { PlasmicComponent } from "./PlasmicComponent";
+import type { StructoComponent } from "./StructoComponent";
 import type {
-  PlasmicRootContextValue,
-  PlasmicRootProvider,
-} from "./PlasmicRootProvider";
+  StructoRootContextValue,
+  StructoRootProvider,
+} from "./StructoRootProvider";
 import {
-  BaseInternalPlasmicComponentLoader,
+  BaseInternalStructoComponentLoader,
   CodeComponentMeta,
   CustomFunctionMeta,
   GlobalContextMeta,
@@ -53,15 +53,15 @@ const FakeDataContext: React.Context<any> = {
   _currentValue: undefined, // default value
 } as any;
 
-const FakePlasmicComponentContext: React.Context<boolean> = {
+const FakeStructoComponentContext: React.Context<boolean> = {
   _currentValue: false, // default value
 } as any;
 
-const FakePlasmicPrepassContext: React.Context<any> = {
+const FakeStructoPrepassContext: React.Context<any> = {
   _currentValue: undefined,
 } as any;
 
-const mkMetaName = (name: string) => `__plasmic_meta_${name}`;
+const mkMetaName = (name: string) => `__structo_meta_${name}`;
 
 function FakeDataCtxReader({ children }: { children: ($ctx: any) => any }) {
   const $ctx = getPrepassContextEnv().readContextValue(FakeDataContext);
@@ -118,14 +118,14 @@ function fakeUseSelectors(selectors = {}): any {
   );
 }
 
-function fakeUsePlasmicDataConfig() {
+function fakeUseStructoDataConfig() {
   const cache = getPrepassContextEnv().readContextValue(
-    FakePlasmicPrepassContext
+    FakeStructoPrepassContext
   );
   return { cache } as any;
 }
 
-const fakeUseMutablePlasmicQueryData: typeof useMutablePlasmicQueryData = (
+const fakeUseMutableStructoQueryData: typeof useMutableStructoQueryData = (
   unserializedKey,
   fetcher
 ) => {
@@ -137,7 +137,7 @@ const fakeUseMutablePlasmicQueryData: typeof useMutablePlasmicQueryData = (
       data: undefined,
     };
   }
-  const cache = fakeUsePlasmicDataConfig().cache as Map<string, any>;
+  const cache = fakeUseStructoDataConfig().cache as Map<string, any>;
   if (cache.has(key)) {
     return {
       isValidating: false,
@@ -158,15 +158,7 @@ const fakeUseMutablePlasmicQueryData: typeof useMutablePlasmicQueryData = (
   }
 };
 
-/**
- * Class components cannot be server components, and for that reason React
- * doesn't even allow calling `createElement` on them if they are not client
- * references.
- *
- * For prepass, we replace the actual Component class with this fake one, and
- * use it as an adaptor to creating a function component instead, before calling
- * `createElement`.
- */
+
 const FakeReactComponent = class FakeReactComponent {
   context = undefined;
   static contextType: any = undefined;
@@ -208,14 +200,14 @@ const fakeCreateElement: <F extends (type: any, ...args: any[]) => any>(
     return originalCreateElement(type, ...args);
   }) as any;
 
-export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLoader {
+export class InternalPrepassStructoLoader extends BaseInternalStructoComponentLoader {
   constructor(opts: InitOptions) {
     super({
       opts,
       onBundleMerged: () => {
         this.refreshRegistry();
       },
-      fetcher: new PlasmicModulesFetcher(opts),
+      fetcher: new StructoModulesFetcher(opts),
       builtinModules: {
         react: {
           ...React,
@@ -297,14 +289,14 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             ? { jsxDEV: fakeCreateElement((jsxDevRuntime as any).jsxDEV) }
             : {}),
         },
-        "@plasmicapp/query": {
+        "@structoapp/query": {
           addLoadingStateListener: () => noop,
-          isPlasmicPrepass: () => true,
-          PlasmicPrepassContext: {} as any,
-          PlasmicQueryDataProvider: ({ children }: any) => <>{children}</>,
-          useMutablePlasmicQueryData: fakeUseMutablePlasmicQueryData,
-          usePlasmicDataConfig: fakeUsePlasmicDataConfig,
-          usePlasmicQueryData: fakeUseMutablePlasmicQueryData,
+          isStructoPrepass: () => true,
+          StructoPrepassContext: {} as any,
+          StructoQueryDataProvider: ({ children }: any) => <>{children}</>,
+          useMutableStructoQueryData: fakeUseMutableStructoQueryData,
+          useStructoDataConfig: fakeUseStructoDataConfig,
+          useStructoQueryData: fakeUseMutableStructoQueryData,
           useSWRConfig: unreachable,
           wrapLoadingFetcher: identity,
           HeadMetadataContext: {
@@ -314,38 +306,38 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             Consumer: ({ children }: any) => children({}),
           } as any as React.Context<any>,
         },
-        "@plasmicapp/data-sources-context": (() => {
-          const FakePlasmicDataSourceContext: React.Context<any> = {
+        "@structoapp/data-sources-context": (() => {
+          const FakeStructoDataSourceContext: React.Context<any> = {
             _currentValue: undefined, // default value
           } as any;
           return {
-            PlasmicDataSourceContextProvider: Object.assign(
+            StructoDataSourceContextProvider: Object.assign(
               ({ children, value }: any) => {
                 const { setContextValue } = getPrepassContextEnv();
-                setContextValue(FakePlasmicDataSourceContext, value);
+                setContextValue(FakeStructoDataSourceContext, value);
                 return <>{children}</>;
               },
               {
                 $$typeof: REACT_PROVIDER_TYPE,
-                _context: FakePlasmicDataSourceContext,
+                _context: FakeStructoDataSourceContext,
               }
             ),
             useCurrentUser: () => {
               const { readContextValue } = getPrepassContextEnv();
-              const ctx = readContextValue(FakePlasmicDataSourceContext);
+              const ctx = readContextValue(FakeStructoDataSourceContext);
               return (
                 ctx?.user ?? {
                   isLoggedIn: false,
                 }
               );
             },
-            usePlasmicDataSourceContext: () => {
+            useStructoDataSourceContext: () => {
               const { readContextValue } = getPrepassContextEnv();
-              return readContextValue(FakePlasmicDataSourceContext);
+              return readContextValue(FakeStructoDataSourceContext);
             },
           };
         })(),
-        "@plasmicapp/host": (() => {
+        "@structoapp/host": (() => {
           return {
             applySelector: fakeApplySelector,
             DataContext: FakeDataContext,
@@ -358,9 +350,9 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
             mkMetaName,
             mkMetaValue: identity,
             PageParamsProvider: ({ children }) => <>{children}</>,
-            PlasmicCanvasContext: { _currentValue: false } as any,
-            PlasmicCanvasHost: () => null,
-            PlasmicLinkProvider: ({ children }) => <>{children}</>,
+            StructoCanvasContext: { _currentValue: false } as any,
+            StructoCanvasHost: () => null,
+            StructoLinkProvider: ({ children }) => <>{children}</>,
             registerComponent: noop,
             registerFunction: noop,
             registerGlobalContext: noop,
@@ -378,17 +370,17 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
                   get: () => noop,
                 }
               ),
-            usePlasmicTranslator: () => undefined,
-            PlasmicTranslatorContext: { _currentValue: undefined } as any,
-            usePlasmicCanvasContext: () => false,
-            usePlasmicLink: () => (props) => <a {...props} />,
-            usePlasmicLinkMaybe: () => undefined,
+            useStructoTranslator: () => undefined,
+            StructoTranslatorContext: { _currentValue: undefined } as any,
+            useStructoCanvasContext: () => false,
+            useStructoLink: () => (props) => <a {...props} />,
+            useStructoLinkMaybe: () => undefined,
             useSelector: fakeUseSelector,
             useSelectors: fakeUseSelectors,
-            usePlasmicCanvasComponentInfo: () => null,
+            useStructoCanvasComponentInfo: () => null,
           };
         })(),
-        "@plasmicapp/loader-runtime-registry": {
+        "@structoapp/loader-runtime-registry": {
           components: SUBSTITUTED_COMPONENTS,
           globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
           codeComponentHelpers: REGISTERED_CODE_COMPONENT_HELPERS,
@@ -427,7 +419,7 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
               readDataEnv: () => readContextValue(FakeDataContext),
               readDataSelector: fakeUseSelector,
               readDataSelectors: fakeUseSelectors,
-              fetchData: fakeUseMutablePlasmicQueryData,
+              fetchData: fakeUseMutableStructoQueryData,
             });
 
             if (serverInfo && serverInfo.children) {
@@ -490,12 +482,7 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
   registerToken: (token: TokenRegistration) => void = noop;
 
   refreshRegistry() {
-    // We swap global variants' useXXXGlobalVariant() hook with
-    // a fake one that just reads from the PlasmicRootContext. Because
-    // global variant values are not supplied by the generated global variant
-    // context providers, but instead by <PlasmicRootProvider/> and by
-    // PlasmicComponentLoader.setGlobalVariants(), we redirect these
-    // hooks to read from them instead.
+    
     for (const globalGroup of this.getBundle().globalGroups) {
       if (globalGroup.type !== "global-screen") {
         SUBSTITUTED_GLOBAL_VARIANT_HOOKS[globalGroup.id] = () => {
@@ -518,8 +505,8 @@ export class InternalPrepassPlasmicLoader extends BaseInternalPlasmicComponentLo
     super.refreshRegistry();
   }
 }
-export function handlePrepassPlasmicRootComponent(
-  props: Parameters<typeof PlasmicRootProvider>[0]
+export function handlePrepassStructoRootComponent(
+  props: Parameters<typeof StructoRootProvider>[0]
 ) {
   const {
     globalVariants,
@@ -539,7 +526,7 @@ export function handlePrepassPlasmicRootComponent(
     authRedirectUri,
   } = props;
   const loader = (props.loader as any)
-    .__internal as InternalPrepassPlasmicLoader;
+    .__internal as InternalPrepassStructoLoader;
 
   const splits = loader.getActiveSplits();
   const value = {
@@ -631,19 +618,19 @@ export function handlePrepassPlasmicRootComponent(
   });
 }
 
-export function handlePrepassPlasmicComponent(
-  props: Parameters<typeof PlasmicComponent>[0]
+export function handlePrepassStructoComponent(
+  props: Parameters<typeof StructoComponent>[0]
 ) {
   const { component, projectId, componentProps, forceOriginal } = props;
   const { setContextValue, readContextValue } = getPrepassContextEnv();
-  const rootContext: PlasmicRootContextValue = readContextValue(
+  const rootContext: StructoRootContextValue = readContextValue(
     FakeRootProviderContext
   );
-  const isRootLoader = !readContextValue(FakePlasmicComponentContext);
+  const isRootLoader = !readContextValue(FakeStructoComponentContext);
   if (!rootContext) {
-    // no existing PlasmicRootProvider
+    // no existing structoRootProvider
     throw new Error(
-      `You must use <PlasmicRootProvider/> at the root of your app`
+      `You must use <StructoRootProvider/> at the root of your app`
     );
   }
   const {
@@ -674,7 +661,7 @@ export function handlePrepassPlasmicComponent(
       name: component,
       projectId,
     });
-    setContextValue(FakePlasmicComponentContext, true);
+    setContextValue(FakeStructoComponentContext, true);
     element = (
       <ReactWebRootProvider
         {...rest}
@@ -700,10 +687,10 @@ export function handlePrepassPlasmicComponent(
   return element;
 }
 
-export function handlePlasmicPrepassContext({
+export function handleStructoPrepassContext({
   cache,
-}: Parameters<typeof PlasmicPrepassContext>[0]) {
-  getPrepassContextEnv().setContextValue(FakePlasmicPrepassContext, cache);
+}: Parameters<typeof StructoPrepassContext>[0]) {
+  getPrepassContextEnv().setContextValue(FakeStructoPrepassContext, cache);
 }
 
 function getPrepassContextEnv(): {

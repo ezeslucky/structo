@@ -1,2 +1,2 @@
-export { PlasmicRemoteChangeWatcher } from "./watcher";
-export type { PlasmicRemoteChangeListener } from "./watcher";
+export { StructoRemoteChangeWatcher } from "./watcher";
+export type { StructoRemoteChangeListener } from "./watcher";

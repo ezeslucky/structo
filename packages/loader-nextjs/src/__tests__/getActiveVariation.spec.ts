@@ -1,7 +1,7 @@
-import { LoaderBundleOutput } from "@plasmicapp/loader-core";
-import { InternalPlasmicComponentLoader } from "@plasmicapp/loader-react";
-import { NextJsPlasmicComponentLoader } from "../index";
-import { SPLIT_0, SPLIT_1 } from "./data";
+import { LoaderBundleOutput } from "@structoapp/loader-core";
+import { InternalStructoComponentLoader } from "@structoapp/loader-react";
+import { NextJsStructoComponentLoader } from "../index";
+import { SPLIT_0, SPLIT_1 } from "../data";
 
 const EMPTY_BUNDLE: LoaderBundleOutput = {
   modules: {
@@ -19,11 +19,11 @@ const EMPTY_BUNDLE: LoaderBundleOutput = {
 };
 
 type GetActiveVariationParams = Parameters<
-  NextJsPlasmicComponentLoader["getActiveVariation"]
+  NextJsStructoComponentLoader["getActiveVariation"]
 >[0];
 
 function createMockedLoader() {
-  const internalLoader = new InternalPlasmicComponentLoader({
+  const internalLoader = new InternalStructoComponentLoader({
     projects: [],
   });
 
@@ -36,7 +36,7 @@ function createMockedLoader() {
     fetchAllData: mockFetchAllData,
   };
 
-  const loader = new NextJsPlasmicComponentLoader(internalLoader);
+  const loader = new NextJsStructoComponentLoader(internalLoader);
 
   return loader;
 }
@@ -111,13 +111,13 @@ describe("SSR getActiveVariation", () => {
     expect(getHeader).toHaveBeenNthCalledWith(3, "Set-Cookie");
 
     expect(setHeader).toHaveBeenNthCalledWith(1, "Set-Cookie", [
-      "plasmic:exp.split-0=slice-0",
+      "structo:exp.split-0=slice-0",
     ]);
     expect(setHeader).toHaveBeenNthCalledWith(2, "Set-Cookie", [
-      "plasmic:exp.split-0=slice-1",
+      "structo:exp.split-0=slice-1",
     ]);
     expect(setHeader).toHaveBeenNthCalledWith(3, "Set-Cookie", [
-      "plasmic:exp.split-0=slice-2",
+      "structo:exp.split-0=slice-2",
     ]);
 
     expect(spyMathRandom).toHaveBeenCalledTimes(3);
@@ -153,7 +153,7 @@ describe("SSR getActiveVariation", () => {
     const req = {
       headers: {},
       cookies: {
-        "plasmic:exp.split-0": "slice-0",
+        "structo:exp.split-0": "slice-0",
       },
     } as any;
 
@@ -162,7 +162,7 @@ describe("SSR getActiveVariation", () => {
         req: {
           headers: {},
           cookies: {
-            "plasmic:exp.split-0": "slice-0",
+            "structo:exp.split-0": "slice-0",
           },
         } as any,
         traits: {},
@@ -176,7 +176,7 @@ describe("SSR getActiveVariation", () => {
         req: {
           headers: {},
           cookies: {
-            "plasmic:exp.split-0": "slice-1",
+            "structo:exp.split-0": "slice-1",
           },
         } as any,
         traits: {},

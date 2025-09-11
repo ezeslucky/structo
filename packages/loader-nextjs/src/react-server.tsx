@@ -1,29 +1,29 @@
 import "server-only";
 
 import {
-  InternalPlasmicComponentLoader,
-  PlasmicComponentLoader,
-} from "@plasmicapp/loader-react/react-server";
+  InternalStructoComponentLoader,
+  StructoComponentLoader,
+} from "@structoapp/loader-react/react-server";
 import type { IncomingMessage, ServerResponse } from "http";
 import NextHead from "next/head.js";
 import NextLink from "next/link.js";
 import * as NextRouter from "next/router.js";
-import { initPlasmicLoaderWithCache } from "./cache";
+import { initStructoLoaderWithCache } from "./cache";
 import type { NextInitOptions } from "./shared-exports";
 
-import { __EXPERMIENTAL__extractPlasmicQueryData as internalExtractPlasmicQueryData } from "@plasmicapp/loader-react/react-server";
-import { ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
+import { __EXPERMIENTAL__extractStructoQueryData as internalExtractStructoQueryData } from "@structoapp/loader-react/react-server";
+import { ExtractStructoQueryData } from "@structoapp/nextjs-app-router";
 import {
   fetchExtractedHeadMetadata,
   fetchExtractedQueryData,
-  withPlasmicMetadata,
-} from "@plasmicapp/nextjs-app-router/react-server";
+  withStructoMetadata,
+} from "@structoapp/nextjs-app-router/react-server";
 
 export * from "./shared-exports";
 export {
   fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData,
   fetchExtractedHeadMetadata as __EXPERMIENTAL__fetchExtractedHeadMetadata,
-  withPlasmicMetadata as __EXPERMIENTAL__withPlasmicMetadata,
+  withStructoMetadata as __EXPERMIENTAL__withStructoMetadata,
 };
 
 import React from "react";
@@ -35,8 +35,8 @@ type ServerRequest = IncomingMessage & {
   };
 };
 
-export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
-  constructor(internal: InternalPlasmicComponentLoader) {
+export class NextJsStructoComponentLoader extends StructoComponentLoader {
+  constructor(internal: InternalStructoComponentLoader) {
     super(internal);
   }
 
@@ -65,16 +65,16 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
         if (opts.known) {
           return opts.known[key];
         } else {
-          return opts.req?.cookies[`plasmic:${key}`] ?? undefined;
+          return opts.req?.cookies[`structo:${key}`] ?? undefined;
         }
       },
       updateKnownValue: (key: string, value: string) => {
         if (opts.res) {
-          const cookie = `plasmic:${key}=${value}`;
+          const cookie = `structo:${key}=${value}`;
           const resCookie = opts.res?.getHeader("Set-Cookie") ?? [];
           let newCookies: string[] = [];
           if (Array.isArray(resCookie)) {
-            newCookies = [...resCookie, `plasmic:${key}=${value}`];
+            newCookies = [...resCookie, `structo:${key}=${value}`];
           } else {
             newCookies = [`${resCookie}`, cookie];
           }
@@ -86,10 +86,10 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   }
 }
 
-export function initPlasmicLoader(opts: NextInitOptions) {
-  const loader = initPlasmicLoaderWithCache<NextJsPlasmicComponentLoader>(
+export function initStructoLoader(opts: NextInitOptions) {
+  const loader = initStructoLoaderWithCache<NextJsStructoComponentLoader>(
     (opts) =>
-      new PlasmicComponentLoader(new InternalPlasmicComponentLoader(opts)),
+      new StructoComponentLoader(new InternalStructoComponentLoader(opts)),
     opts
   );
   loader.registerModules({
@@ -105,25 +105,15 @@ export function initPlasmicLoader(opts: NextInitOptions) {
   return loader;
 }
 
-export const __EXPERMIENTAL__extractPlasmicQueryData: (
+export const __EXPERMIENTAL__extractStructoQueryData: (
   element: React.ReactElement,
-  // We can't use `NextJsPlasmicComponentLoader` or `PlasmicComponentLoader`
-  // types because they refer to the react-server version, which Typescript
-  // doesn't recognize as compatible with the client version (whose type is
-  // also the one exported from `react-server-conditional` imports).
-  loader: ClientExports.NextJsPlasmicComponentLoader
-) => Promise<Record<string, any>> = internalExtractPlasmicQueryData as any;
+  
+  loader: ClientExports.NextJsStructoComponentLoader
+) => Promise<Record<string, any>> = internalExtractStructoQueryData as any;
 
-/**
- * Helper function to extract Plasmic data.
- *
- * Given the <PlasmicClientRootProvider> element and current pathname + search
- * params, returns:
- * - The extracted query data, if `plasmicSsr` search param is set
- * - A copy of the root provider element with the extracted query data, otherwise
- */
-export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
-  plasmicRootProvider: React.ReactElement,
+
+export async function __EXPERMIENTAL__withExtractStructoQueryData(
+  structoRootProvider: React.ReactElement,
   {
     pathname,
     searchParams,
@@ -132,21 +122,21 @@ export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
     searchParams: Record<string, string | string[]> | undefined;
   }
 ) {
-  const isPlasmicSsr =
-    !!searchParams?.["plasmicSsr"] && searchParams?.["plasmicSsr"] !== "false";
+  const isStructoSsr =
+    !!searchParams?.["structoSsr"] && searchParams?.["structoSsr"] !== "false";
 
-  // If `plasmicSsr` search param is set, just wrap the root provider inside
-  // <ExtractPlasmicQueryData>
-  if (isPlasmicSsr) {
+  // If `structoSsr` search param is set, just wrap the root provider inside
+  // <ExtractstructoQueryData>
+  if (isStructoSsr) {
     return (
-      <ExtractPlasmicQueryData>{plasmicRootProvider}</ExtractPlasmicQueryData>
+      <ExtractStructoQueryData>{structoRootProvider}</ExtractStructoQueryData>
     );
   }
 
-  // Otherwise, fetch the same endpoint, but setting `plasmicSsr` to extract the
+  // Otherwise, fetch the same endpoint, but setting `structoSsr` to extract the
   // query data.
   const prepassHost =
-    process.env.PLASMIC_PREPASS_HOST ??
+    process.env.STRUCTO_PREPASS_HOST ??
     (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ??
     `http://localhost:${process.env.PORT ?? 3000}`;
 
@@ -157,9 +147,9 @@ export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
     )
   );
 
-  // Set `plasmicSsr` search param to indicate you are using this endpoint
+  // Set `structoSsr` search param to indicate you are using this endpoint
   // to extract query data.
-  newSearchParams.set("plasmicSsr", "true");
+  newSearchParams.set("structoSsr", "true");
 
   if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
     // If protection bypass is enabled, use it to ensure fetching from
@@ -175,8 +165,7 @@ export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
     `${prepassHost}${pathname}?${newSearchParams.toString()}`
   );
 
-  // Provide the query data to <PlasmicClientRootProvider>
-  return React.cloneElement(plasmicRootProvider, {
+  return React.cloneElement(structoRootProvider, {
     prefetchedQueryData,
   });
 }

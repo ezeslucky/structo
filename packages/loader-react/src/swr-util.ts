@@ -1,14 +1,8 @@
-import type { useMutablePlasmicQueryData } from "@plasmicapp/query";
+import type { useMutableStructoQueryData } from "@structoapp/query";
 
-/**
- * It's not possible to `import { serialize } from "swr"` from RSC, as it
- * triggers "`createContext` is not a function" error :/
- *
- * So here we replicate the key serialization in order to generate the
- * appropriate cache key within data extraction.
- */
+
 export function swrSerialize(
-  key: Parameters<typeof useMutablePlasmicQueryData>[0]
+  key: Parameters<typeof useMutableStructoQueryData>[0]
 ): [string | null | undefined | false, any[]] {
   if (typeof key === "function") {
     try {

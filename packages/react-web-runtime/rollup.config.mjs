@@ -38,7 +38,7 @@ function makeBuild({ entrypoint, outputDir, moduleName }) {
         },
       ],
       plugins: getPlugins(),
-      external: ["react", "react-dom", "@plasmicapp/react-web"],
+      external: ["react", "react-dom", "@structoapp/react-web"],
     },
   ];
   return builds;

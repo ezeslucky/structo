@@ -1,11 +1,11 @@
-import { InternalPlasmicComponentLoader } from "./loader-client";
+import { InternalStructoComponentLoader } from "./loader-client";
 import {
   CodeComponentMeta,
   CustomFunctionMeta,
   FetchComponentDataOpts,
   GlobalContextMeta,
   InitOptions,
-  PlasmicComponentLoader,
+  StructoComponentLoader,
 } from "./loader-shared";
 
 export {
@@ -14,35 +14,35 @@ export {
   GlobalActionsContext,
   GlobalActionsProvider,
   PageParamsProvider,
-  PlasmicCanvasContext,
-  PlasmicCanvasHost,
-  PlasmicTranslatorContext,
+  StructoCanvasContext,
+  StructoCanvasHost,
+  StructoTranslatorContext,
   repeatedElement,
   useDataEnv,
-  usePlasmicCanvasComponentInfo,
-  usePlasmicCanvasContext,
+  useStructoCanvasComponentInfo,
+  useStructoCanvasContext,
   useSelector,
   useSelectors,
-} from "@plasmicapp/host";
-export type { PropType, TokenRegistration } from "@plasmicapp/host";
-export { usePlasmicQueryData } from "@plasmicapp/query";
-export { PlasmicComponent } from "./PlasmicComponent";
-export { PlasmicRootProvider } from "./PlasmicRootProvider";
+} from "@structoapp/host";
+export type { PropType, TokenRegistration } from "@structoapp/host";
+export { useStructoQueryData } from "@structoapp/query";
+export { StructoComponent } from "./StructoComponent";
+export { StructoRootProvider } from "./StructoRootProvider";
 export type {
   GlobalVariantSpec,
-  PlasmicTranslator,
-} from "./PlasmicRootProvider";
-export { extractPlasmicQueryData, plasmicPrepass } from "./prepass-client";
+  StructoTranslator,
+} from "./StructoRootProvider";
+export { extractStructoQueryData, structoPrepass } from "./prepass-client";
 export {
-  extractPlasmicQueryDataFromElement,
+  extractStructoQueryDataFromElement,
   hydrateFromElement,
   renderToElement,
   renderToString,
 } from "./render";
 export * from "./shared-exports";
-export { usePlasmicComponent } from "./usePlasmicComponent";
+export { useStructoComponent } from "./useStructoComponent";
 export type { ComponentLookupSpec } from "./utils";
-export { InternalPlasmicComponentLoader, PlasmicComponentLoader };
+export { InternalStructoComponentLoader, StructoComponentLoader };
 export type {
   CodeComponentMeta,
   CustomFunctionMeta,
@@ -50,7 +50,7 @@ export type {
   GlobalContextMeta,
 };
 
-export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
-  const internal = new InternalPlasmicComponentLoader(opts);
-  return new PlasmicComponentLoader(internal);
+export function initStructoLoader(opts: InitOptions): StructoComponentLoader {
+  const internal = new InternalStructoComponentLoader(opts);
+  return new StructoComponentLoader(internal);
 }

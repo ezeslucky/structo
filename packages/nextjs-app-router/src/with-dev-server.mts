@@ -16,12 +16,12 @@ async function startDevServer(
   }
 ) {
   console.log(
-    `Plasmic: starting prepass dev server at http://localhost:${port} via "npm run ${command}"...`
+    `Structo: starting prepass dev server at http://localhost:${port} via "npm run ${command}"...`
   );
 
   const devServerProcess = spawn(`npm`, ["run", command], {
     env: {
-      PLASMIC_PREPASS_SERVER: "true",
+      STRUCTO_PREPASS_SERVER: "true",
       ...process.env,
       PORT: `${port}`,
     },
@@ -32,7 +32,7 @@ async function startDevServer(
     devServerProcess.stdout?.on("data", (data: any) => {
       if (!started && data.toString().toLowerCase().includes("ready")) {
         started = true;
-        console.log(`Plasmic: Dev server started`);
+        console.log(`Structo: Dev server started`);
         resolve(devServerProcess);
       }
       if (opts?.verbose) {
@@ -41,7 +41,7 @@ async function startDevServer(
     });
     devServerProcess.stderr?.on("data", (data) => {
       if (data.toString().toLowerCase().includes("error")) {
-        console.log(`Plasmic: Dev server failed to start`);
+        console.log(`Structo: Dev server failed to start`);
         reject(new Error(`Error starting dev server: ${data.toString()}`));
       }
       if (opts?.verbose) {
@@ -77,29 +77,29 @@ async function main() {
   const killDevServer = () => {
     devProcess.kill("SIGKILL");
     return kill(port).catch((err) => {
-      console.error(`Plasmic: Failed to kill dev server: ${err}`);
+      console.error(`Structo: Failed to kill dev server: ${err}`);
     });
   };
 
   const command = argv._.map((x) => `${x}`);
-  console.log(`Plasmic: Running command: ${command.join(" ")}`);
+  console.log(`Structo: Running command: ${command.join(" ")}`);
   const commandProcess = spawn(command[0], command.slice(1), {
     env: {
       ...process.env,
-      PLASMIC_PREPASS_HOST: `http://localhost:${port}`,
+      STRUCTO_PREPASS_HOST: `http://localhost:${port}`,
     },
   });
-  console.log(`Plasmic: Command running with pid ${commandProcess.pid}`);
+  console.log(`Structo: Command running with pid ${commandProcess.pid}`);
   commandProcess.stdout?.pipe(process.stdout);
   commandProcess.stderr?.pipe(process.stderr);
   commandProcess.on("error", (err: any) => {
-    console.error(`Plasmic: Command error: ${err}`);
+    console.error(`Structo: Command error: ${err}`);
     killDevServer().then(() => {
       process.exit(commandProcess.exitCode ?? undefined);
     });
   });
   commandProcess.on("exit", () => {
-    console.log(`Plasmic: Command finished; killing prepass dev server...`);
+    console.log(`Structo: Command finished; killing prepass dev server...`);
     killDevServer().then(() => {
       process.exit(undefined);
     });

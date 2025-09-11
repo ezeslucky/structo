@@ -1,1 +1,1 @@
-export * from "@plasmicapp/auth-react";
+export * from "@structoapp/auth-react";

@@ -2,7 +2,7 @@ import type {
   ExperimentSlice,
   SegmentSlice,
   Split,
-} from "@plasmicapp/loader-fetcher";
+} from "@structoapp/loader-fetcher";
 import jsonLogic from "json-logic-js";
 import { getSeededRandomFunction } from "./random";
 
@@ -11,7 +11,7 @@ const isBrowser =
   window != null &&
   typeof window.document !== "undefined";
 
-const PLASMIC_SEED = "plasmic_seed";
+const STRUCTO_SEED = "structo_seed";
 
 const BUILTIN_TRAITS_UNKNOWN = {
   pageUrl: "unknown",
@@ -46,9 +46,9 @@ export function getActiveVariation(opts: {
       return opts.getRandomValue(key);
     }
 
-    if (opts.traits[PLASMIC_SEED]) {
+    if (opts.traits[STRUCTO_SEED]) {
       const rand = getSeededRandomFunction(
-        (opts.traits[PLASMIC_SEED] ?? "") + key
+        (opts.traits[STRUCTO_SEED] ?? "") + key
       );
       return rand();
     }
@@ -74,16 +74,9 @@ export function getActiveVariation(opts: {
     const numSlices = split.slices.length;
     let chosenSlice = undefined;
     if (split.type === "experiment") {
-      /**
-       * If useSeedBucketing is enabled, we will use the seed to bucket the user
-       * into a slice. Otherwise, we will use the random value to bucket the user
-       * into a slice.
-       *
-       * By using seed bucketing, we ensure the number of seeds that each slice gets,
-       * is proportional to the slice's probability.
-       */
+     
       if (opts.useSeedBucketing) {
-        const seed = opts.traits[PLASMIC_SEED];
+        const seed = opts.traits[STRUCTO_SEED];
         const buckets: string[] = [];
         const totalBuckets = opts.seedRange ?? 1;
         let avaiableBuckets = totalBuckets;

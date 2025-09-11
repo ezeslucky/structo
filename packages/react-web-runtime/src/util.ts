@@ -1,9 +1,6 @@
-import { createPlasmicElementProxy } from "@plasmicapp/react-web";
+import { createStructoElementProxy } from "@structoapp/react-web";
 
-/**
- * A jsx shim that just calls into createPlasmicElementProxy.  Eventually, should
- * instead be using react/jsx-runtime to do the right thing.
- */
+
 export function jsxShim(
   type: React.ElementType<any>,
   props: any,
@@ -11,9 +8,10 @@ export function jsxShim(
 ) {
   const { children, ...restProps } = props;
   restProps["key"] = key;
-  return createPlasmicElementProxy(
+  return createStructoElementProxy(
     type,
     restProps,
+    //@ts-ignore
     ...(Array.isArray(children) ? children : children ? [children] : [])
   );
 }

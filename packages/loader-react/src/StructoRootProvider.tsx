@@ -1,30 +1,30 @@
-import { PlasmicDataSourceContextValue } from "@plasmicapp/data-sources-context";
-import { PageParamsProvider } from "@plasmicapp/host";
-import { AssetModule, ComponentMeta, Split } from "@plasmicapp/loader-core";
-import { PlasmicQueryDataProvider } from "@plasmicapp/query";
+import { StructoDataSourceContextValue } from "@structoapp/data-sources-context";
+import { PageParamsProvider } from "@structoapp/host";
+import { AssetModule, ComponentMeta, Split } from "@structoapp/loader-core";
+import { StructoQueryDataProvider } from "@structoapp/query";
 import * as React from "react";
-import { InternalPlasmicComponentLoader } from "./loader-client";
-import { ComponentRenderData, PlasmicComponentLoader } from "./loader-shared";
+import { InternalStructoComponentLoader } from "./loader-client";
+import { ComponentRenderData, StructoComponentLoader } from "./loader-shared";
 import { MaybeWrap, useForceUpdate } from "./utils";
 import {
   getGlobalVariantsFromSplits,
   mergeGlobalVariantsSpec,
 } from "./variation";
 
-export interface PlasmicRootContextValue extends PlasmicDataSourceContextValue {
+export interface StructoRootContextValue extends StructoDataSourceContextValue {
   globalVariants?: GlobalVariantSpec[];
   globalContextsProps?: Record<string, any>;
-  loader: InternalPlasmicComponentLoader;
+  loader: InternalStructoComponentLoader;
   variation?: Record<string, string>;
-  translator?: PlasmicTranslator;
+  translator?: StructoTranslator;
   Head?: React.ComponentType<any>;
   Link?: React.ComponentType<any>;
   disableLoadingBoundary?: boolean;
   suspenseFallback?: React.ReactNode;
 }
 
-const PlasmicRootContext = React.createContext<
-  PlasmicRootContextValue | undefined
+const StructoRootContext = React.createContext<
+  StructoRootContextValue | undefined
 >(undefined);
 
 export interface GlobalVariantSpec {
@@ -33,7 +33,7 @@ export interface GlobalVariantSpec {
   value: any;
 }
 
-export type PlasmicTranslator = (
+export type StructoTranslator = (
   str: string,
   opts?: {
     components?: {
@@ -43,19 +43,19 @@ export type PlasmicTranslator = (
 ) => React.ReactNode;
 
 /**
- * PlasmicRootProvider should be used at the root of your page
+ * structoRootProvider should be used at the root of your page
  * or application.
  */
-export function PlasmicRootProvider(
+export function StructoRootProvider(
   props: {
     /**
-     * The global PlasmicComponentLoader instance you created via
-     * initPlasmicLoader().
+     * The global structoComponentLoader instance you created via
+     * initstructoLoader().
      */
-    loader: PlasmicComponentLoader;
+    loader: StructoComponentLoader;
 
     /**
-     * Global variants to activate for Plasmic components
+     * Global variants to activate for structo components
      */
     globalVariants?: GlobalVariantSpec[];
 
@@ -72,20 +72,20 @@ export function PlasmicRootProvider(
     skipFonts?: boolean;
 
     /**
-     * If you have pre-fetched component data via PlasmicComponentLoader,
-     * you can pass them in here; PlasmicComponent will avoid fetching
+     * If you have pre-fetched component data via structoComponentLoader,
+     * you can pass them in here; structoComponent will avoid fetching
      * component data that have already been pre-fetched.
      */
     prefetchedData?: ComponentRenderData;
 
     /**
-     * If you have pre-fetched data that are needed by usePlasmicQueryData(),
+     * If you have pre-fetched data that are needed by usestructoQueryData(),
      * then pass in the pre-fetched cache here, mapping query key to fetched data.
      */
     prefetchedQueryData?: Record<string, any>;
 
     /**
-     * Specifies whether usePlasmicQueryData() should be operating in suspense mode
+     * Specifies whether usestructoQueryData() should be operating in suspense mode
      * (throwing promises).
      */
     suspenseForQueryData?: boolean;
@@ -105,10 +105,10 @@ export function PlasmicRootProvider(
     /**
      * Translator function to be used for text blocks
      */
-    translator?: PlasmicTranslator;
+    translator?: StructoTranslator;
 
     /**
-     * Head component to use in PlasmicHead component (e.g. Head from next/head
+     * Head component to use in structoHead component (e.g. Head from next/head
      * or Helmet from react-helmet).
      */
     Head?: React.ComponentType<any>;
@@ -136,7 +136,7 @@ export function PlasmicRootProvider(
      */
     pageQuery?: Record<string, string | string[] | undefined>;
     /**
-     * Whether the internal Plasmic React.Suspense boundaries should be removed
+     * Whether the internal structo React.Suspense boundaries should be removed
      */
     disableLoadingBoundary?: boolean;
     /**
@@ -147,7 +147,7 @@ export function PlasmicRootProvider(
      * Fallback value for React.Suspense boundary
      */
     suspenseFallback?: React.ReactNode;
-  } & PlasmicDataSourceContextValue
+  } & StructoDataSourceContextValue
 ) {
   const {
     globalVariants,
@@ -170,7 +170,7 @@ export function PlasmicRootProvider(
     disableRootLoadingBoundary,
   } = props;
   const loader = (props.loader as any)
-    .__internal as InternalPlasmicComponentLoader;
+    .__internal as InternalStructoComponentLoader;
 
   if (prefetchedData) {
     loader.registerPrefetchedBundle(prefetchedData.bundle);
@@ -189,22 +189,22 @@ export function PlasmicRootProvider(
   );
 
   React.useEffect(() => {
-    loader.subscribePlasmicRoot(watcher);
-    return () => loader.unsubscribePlasmicRoot(watcher);
+    loader.subscribeStructoRoot(watcher);
+    return () => loader.unsubscribeStructoRoot(watcher);
   }, [watcher, loader]);
 
-  const currentContextValue = React.useContext(PlasmicRootContext);
+  const currentContextValue = React.useContext(StructoRootContext);
 
   const { user, userAuthToken, isUserLoading, authRedirectUri } = props;
 
-  const value = React.useMemo<PlasmicRootContextValue>(() => {
+  const value = React.useMemo<StructoRootContextValue>(() => {
     // Fallback to the value in `currentContextValue` if none is provided
     const withCurrentContextValueFallback = <
-      K extends keyof PlasmicRootContextValue
+      K extends keyof StructoRootContextValue
     >(
-      v: PlasmicRootContextValue[K],
+      v: StructoRootContextValue[K],
       key: K
-    ): PlasmicRootContextValue[K] => {
+    ): StructoRootContextValue[K] => {
       return (v !== undefined ? v : currentContextValue?.[key])!;
     };
     return {
@@ -286,13 +286,13 @@ export function PlasmicRootProvider(
     loader.getBundle().disableRootLoadingBoundaryByDefault;
 
   return (
-    <PlasmicQueryDataProvider
+    <StructoQueryDataProvider
       prefetchedCache={prefetchedQueryData}
       suspense={suspenseForQueryData}
     >
-      <PlasmicRootContext.Provider value={value}>
+      <StructoRootContext.Provider value={value}>
         {!skipCss && (
-          <PlasmicCss
+          <StructoCss
             loader={loader}
             prefetchedData={prefetchedData}
             skipFonts={skipFonts}
@@ -314,8 +314,8 @@ export function PlasmicRootProvider(
             {children}
           </MaybeWrap>
         </PageParamsProvider>
-      </PlasmicRootContext.Provider>
-    </PlasmicQueryDataProvider>
+      </StructoRootContext.Provider>
+    </StructoQueryDataProvider>
   );
 }
 
@@ -323,8 +323,8 @@ export function PlasmicRootProvider(
  * Inject all css modules as <style/> tags. We can't use the usual styleInjector postcss
  * uses because that doesn't work on the server side for SSR.
  */
-const PlasmicCss = React.memo(function PlasmicCss(props: {
-  loader: InternalPlasmicComponentLoader;
+const StructoCss = React.memo(function StructoCss(props: {
+  loader: InternalStructoComponentLoader;
   prefetchedData?: ComponentRenderData;
   skipFonts?: boolean;
 }) {
@@ -350,15 +350,15 @@ const PlasmicCss = React.memo(function PlasmicCss(props: {
   );
 
   React.useEffect(() => {
-    loader.subscribePlasmicRoot(watcher);
-    return () => loader.unsubscribePlasmicRoot(watcher);
+    loader.subscribeStructoRoot(watcher);
+    return () => loader.unsubscribeStructoRoot(watcher);
   }, [watcher, loader]);
 
   return <style dangerouslySetInnerHTML={{ __html: builtCss }} />;
 });
 
 function buildCss(
-  loader: InternalPlasmicComponentLoader,
+  loader: InternalStructoComponentLoader,
   opts: {
     scopedCompMetas?: ComponentMeta[];
     skipFonts?: boolean;
@@ -396,6 +396,6 @@ function buildCss(
   `;
 }
 
-export function usePlasmicRootContext() {
-  return React.useContext(PlasmicRootContext);
+export function useStructoRootContext() {
+  return React.useContext(StructoRootContext);
 }

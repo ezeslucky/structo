@@ -26,7 +26,7 @@ type DistributeTuple<T> = T extends [infer T1, infer T2]
 
 export type VariantDef<V> = DistributeTuple<VariantDefTuple<V>>;
 
-export type PlasmicClass<
+export type StructoClass<
   V extends Record<string, any>,
   A extends Record<string, any>,
   O extends Record<string, any>
@@ -36,17 +36,17 @@ export type PlasmicClass<
   internalArgProps: (keyof A)[];
 };
 
-export type AnyPlasmicClass = PlasmicClass<any, any, any>;
+export type AnyStructoClass = StructoClass<any, any, any>;
 
-export type PlasmicClassVariants<
-  C extends AnyPlasmicClass
-> = C extends PlasmicClass<infer V, any, any> ? V : unknown;
-export type PlasmicClassArgs<
-  C extends AnyPlasmicClass
-> = C extends PlasmicClass<any, infer A, any> ? A : unknown;
-export type PlasmicClassOverrides<
-  C extends AnyPlasmicClass
-> = C extends PlasmicClass<any, any, infer O> ? O : unknown;
+export type StructoClassVariants<
+  C extends AnyStructoClass
+> = C extends StructoClass<infer V, any, any> ? V : unknown;
+export type StructoClassArgs<
+  C extends AnyStructoClass
+> = C extends StructoClass<any, infer A, any> ? A : unknown;
+export type StructoClassOverrides<
+  C extends AnyStructoClass
+> = C extends StructoClass<any, any, infer O> ? O : unknown;
 
 type BooleanLike = boolean | undefined | null;
 

@@ -131,9 +131,9 @@ const render = (type: any, instance: any, queue: Frame[]): ReactNode => {
   } catch (error: any) {
     if (typeof error.then !== 'function') {
       console.warn(
-        `PLASMIC: Encountered error when pre-rendering component ${getComponentName(
+        `STRUCTO: Encountered error when pre-rendering component ${getComponentName(
           type
-        )}. This is fine as long as you are not fetching data with @plasmicapp/query inside this component.  Error: ${error}`
+        )}. This is fine as long as you are not fetching data with @structoapp/query inside this component.  Error: ${error}`
       )
       return null
     }

@@ -2,11 +2,11 @@ import * as React from "react";
 import { omit, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   VariantDef,
 } from "../plume-utils";
 
@@ -58,20 +58,20 @@ export type HtmlButtonOnlyProps = Exclude<
 
 export type ButtonRef = React.Ref<HTMLButtonElement | HTMLAnchorElement>;
 
-interface ButtonConfig<C extends AnyPlasmicClass> {
-  showStartIconVariant: VariantDef<PlasmicClassVariants<C>>;
-  showEndIconVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
-  startIconSlot?: keyof PlasmicClassArgs<C>;
-  endIconSlot?: keyof PlasmicClassArgs<C>;
-  contentSlot: keyof PlasmicClassArgs<C>;
-  root: keyof PlasmicClassOverrides<C>;
+interface ButtonConfig<C extends AnyStructoClass> {
+  showStartIconVariant: VariantDef<StructoClassVariants<C>>;
+  showEndIconVariant?: VariantDef<StructoClassVariants<C>>;
+  isDisabledVariant?: VariantDef<StructoClassVariants<C>>;
+  startIconSlot?: keyof StructoClassArgs<C>;
+  endIconSlot?: keyof StructoClassArgs<C>;
+  contentSlot: keyof StructoClassArgs<C>;
+  root: keyof StructoClassOverrides<C>;
 }
 
 export function useButton<
   P extends PlumeButtonProps,
-  C extends AnyPlasmicClass
->(plasmicClass: C, props: P, config: ButtonConfig<C>, ref: ButtonRef = null) {
+  C extends AnyStructoClass
+>(structoClass: C, props: P, config: ButtonConfig<C>, ref: ButtonRef = null) {
   const {
     link,
     isDisabled,
@@ -85,7 +85,7 @@ export function useButton<
     ...rest
   } = props;
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.showStartIconVariant, active: showStartIcon },
       { def: config.showEndIconVariant, active: showEndIcon },
@@ -94,7 +94,7 @@ export function useButton<
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     ...(config.startIconSlot && { [config.startIconSlot]: startIcon }),
     ...(config.endIconSlot && { [config.endIconSlot]: endIcon }),
     [config.contentSlot]: children,
@@ -103,8 +103,8 @@ export function useButton<
   let buttonType = undefined;
   if (!link) {
     if (
-      !plasmicClass.internalVariantProps.includes("type") &&
-      !plasmicClass.internalArgProps.includes("type") &&
+      !structoClass.internalVariantProps.includes("type") &&
+      !structoClass.internalArgProps.includes("type") &&
       "type" in rest
     ) {
       // There's no Plasmic-defined variant or arg called "type",
@@ -125,8 +125,8 @@ export function useButton<
         // inherited from "button", so let `rest` override it
         ...omit(
           rest as any,
-          ...plasmicClass.internalArgProps,
-          ...plasmicClass.internalVariantProps
+          ...structoClass.internalArgProps,
+          ...structoClass.internalVariantProps
         ),
         type: buttonType,
         ref: ref,
@@ -139,10 +139,10 @@ export function useButton<
   };
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
   };
 }

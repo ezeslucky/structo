@@ -1,12 +1,12 @@
-import type { CodeModule } from "@plasmicapp/loader-core";
+import type { CodeModule } from "@structoapp/loader-core";
 import {
-  PlasmicRootProvider as CommonPlasmicRootProvider,
+  StructoRootProvider as CommonStructoRootProvider,
   ComponentLookupSpec,
   FetchComponentDataOpts as InternalFetchComponentDataOpts,
-  InternalPlasmicComponentLoader,
-  PlasmicComponentLoader,
-  extractPlasmicQueryData as internalExtractPlasmicQueryData,
-} from "@plasmicapp/loader-react";
+  InternalStructoComponentLoader,
+  StructoComponentLoader,
+  extractStructoQueryData as internalExtractStructoQueryData,
+} from "@structoapp/loader-react";
 import { IncomingMessage, ServerResponse } from "http";
 export {
   DataCtxReader,
@@ -14,45 +14,37 @@ export {
   GlobalActionsContext,
   GlobalActionsProvider,
   PageParamsProvider,
-  PlasmicCanvasContext,
-  PlasmicCanvasHost,
-  PlasmicComponent,
-  PlasmicTranslatorContext,
-  plasmicPrepass,
+  StructoCanvasContext,
+  StructoCanvasHost,
+  StructoComponent,
+  StructoTranslatorContext,
+  StructoPrepass,
   repeatedElement,
   useDataEnv,
-  usePlasmicCanvasComponentInfo,
-  usePlasmicCanvasContext,
-  usePlasmicComponent,
-  usePlasmicQueryData,
+  useStructoCanvasComponentInfo,
+  useStructoCanvasContext,
+  useStructoComponent,
+  useStructoQueryData,
   useSelector,
   useSelectors,
-} from "@plasmicapp/loader-react";
+} from "@structoapp/loader-react";
 export type {
   CodeComponentMeta,
   CustomFunctionMeta,
   GlobalContextMeta,
-  PlasmicTranslator,
+  StructoTranslator,
   PropType,
   TokenRegistration,
-} from "@plasmicapp/loader-react";
-export { ExtractPlasmicQueryData as __EXPERMIENTAL__ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
+} from "@structoapp/loader-react";
+export { ExtractStructoQueryData as __EXPERMIENTAL__ExtractStructoQueryData } from "@structoapp/nextjs-app-router";
 export * from "./shared-exports";
-// NextHead and NextLink must be default imported (`import Pkg`) instead of a namespace import (`import * as Pkg`).
-// Otherwise, there's a Next.js 12 bug when referencing these dependencies due to default import interop.
-// The transpiled CommonJS code would create a `default` field on the package,
-// causing React to think it's an invalid React object:
-// ```
-// const NextHead = __defaultInterop(require('next/head.js'))
-// assert(typeof NextHead === 'object')
-// assert(typeof NextHead.default === 'function')
-// ```
+
 import NextHead from "next/head.js";
 import NextLink from "next/link.js";
 import * as NextRouter from "next/router.js";
 import Script from "next/script";
 import * as React from "react";
-import { initPlasmicLoaderWithCache } from "./cache";
+import { initStructoLoaderWithCache } from "./cache";
 import { wrapRouterContext } from "./mocks";
 import type { ComponentRenderData, NextInitOptions } from "./shared-exports";
 
@@ -95,8 +87,8 @@ export interface FetchComponentDataOpts extends InternalFetchComponentDataOpts {
   deferChunks?: boolean;
 }
 
-export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
-  constructor(internal: InternalPlasmicComponentLoader) {
+export class NextJsStructoComponentLoader extends StructoComponentLoader {
+  constructor(internal: InternalStructoComponentLoader) {
     super(internal);
   }
 
@@ -126,16 +118,16 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
         if (opts.known) {
           return opts.known[key];
         } else {
-          return opts.req?.cookies[`plasmic:${key}`] ?? undefined;
+          return opts.req?.cookies[`structo:${key}`] ?? undefined;
         }
       },
       updateKnownValue: (key: string, value: string) => {
         if (opts.res) {
-          const cookie = `plasmic:${key}=${value}`;
+          const cookie = `structo:${key}=${value}`;
           const resCookie = opts.res?.getHeader("Set-Cookie") ?? [];
           let newCookies: string[] = [];
           if (Array.isArray(resCookie)) {
-            newCookies = [...resCookie, `plasmic:${key}=${value}`];
+            newCookies = [...resCookie, `structo:${key}=${value}`];
           } else {
             newCookies = [`${resCookie}`, cookie];
           }
@@ -209,11 +201,11 @@ function parseFetchComponentDataArgs(...args: any[]) {
   return { specs, opts };
 }
 
-export function initPlasmicLoader(opts: NextInitOptions) {
-  const loader = initPlasmicLoaderWithCache<NextJsPlasmicComponentLoader>(
+export function initStructoLoader(opts: NextInitOptions) {
+  const loader = initStructoLoaderWithCache<NextJsStructoComponentLoader>(
     (opts) =>
-      new NextJsPlasmicComponentLoader(
-        new InternalPlasmicComponentLoader(opts)
+      new NextJsStructoComponentLoader(
+        new InternalStructoComponentLoader(opts)
       ),
     opts
   );
@@ -230,47 +222,12 @@ export function initPlasmicLoader(opts: NextInitOptions) {
   return loader;
 }
 
-/**
- * Performs a prepass over Plasmic content, kicking off the necessary
- * data fetches, and populating the fetched data into a cache.  This
- * cache can be passed as prefetchedQueryData into PlasmicRootProvider.
- *
- * To limit rendering errors that can occur when you do this, we recommend
- * that you pass in _only_ the PlasmicComponents that you are planning to use
- * as the argument.  For example:
- *
- *   const cache = await extractPlasmicQueryData(
- *     <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData}>
- *       <PlasmicComponent component="Home" componentProps={{
- *         // Specify the component prop overrides you are planning to use
- *         // to render the page, as they may change what data is fetched.
- *         ...
- *       }} />
- *       <PlasmicComponent component="NavBar" componentProps={{
- *         ...
- *       }} />
- *       ...
- *     </PlasmicRootProvider>
- *   );
- *
- * If your PlasmicComponent will be wrapping components that require special
- * context set up, you should also wrap the element above with those context
- * providers.
- *
- * You should avoid passing in elements that are not related to Plasmic, as any
- * rendering errors from those elements during the prepass may result in data
- * not being populated in the cache.
- *
- * @param element a React element containing instances of PlasmicComponent.
- *   Will attempt to satisfy all data needs from usePlasmicDataQuery()
- *   in this element tree.
- * @returns an object mapping query key to fetched data
- */
-export async function extractPlasmicQueryData(element: React.ReactElement) {
-  return internalExtractPlasmicQueryData(await wrapRouterContext(element));
+
+export async function extractStructoQueryData(element: React.ReactElement) {
+  return internalExtractStructoQueryData(await wrapRouterContext(element));
 }
 
-const PlasmicNextLink = React.forwardRef(function PlasmicNextLink(
+const StructoNextLink = React.forwardRef(function StructoNextLink(
   props: React.ComponentProps<typeof NextLink>,
   ref: React.Ref<HTMLAnchorElement>
 ) {
@@ -311,10 +268,10 @@ const PlasmicNextLink = React.forwardRef(function PlasmicNextLink(
   }
 });
 
-export function PlasmicRootProvider(
+export function StructoRootProvider(
   // We omit Head but still allow override for Link
   props: Omit<
-    React.ComponentProps<typeof CommonPlasmicRootProvider>,
+    React.ComponentProps<typeof CommonStructoRootProvider>,
     "Head"
   > & { skipChunks?: boolean }
 ) {
@@ -322,9 +279,9 @@ export function PlasmicRootProvider(
     <>
       {!props.skipChunks &&
         renderDynamicPayloadScripts(props.loader, props.prefetchedData)}
-      <CommonPlasmicRootProvider
+      <CommonStructoRootProvider
         Head={NextHead}
-        Link={PlasmicNextLink}
+        Link={StructoNextLink}
         {...props}
       />
     </>
@@ -332,7 +289,7 @@ export function PlasmicRootProvider(
 }
 
 function renderDynamicPayloadScripts(
-  loader: PlasmicComponentLoader,
+  loader: StructoComponentLoader,
   prefetchedData: ComponentRenderData | undefined
 ) {
   const missingModulesData =
@@ -347,20 +304,14 @@ function renderDynamicPayloadScripts(
   const isBrowser = typeof window !== "undefined";
 
   if (isBrowser) {
-    // `next/script` seems to not be correctly added to `<head>` in the initial
-    // HTML sometimes when using custom documents:
-    // https://linear.app/plasmic/issue/PLA-10652
-
-    // Make sure to create the promises in this case - the script to actually fetch
-    // the chunks will be added once hydration is completed.
-    if (!(globalThis as any).__PlasmicBundlePromises) {
-      (globalThis as any).__PlasmicBundlePromises = {};
+    if (!(globalThis as any).__StructoBundlePromises) {
+      (globalThis as any).__StructoBundlePromises = {};
     }
     for (const { fileName } of missingModulesData) {
-      if (!(globalThis as any).__PlasmicBundlePromises[fileName]) {
-        (globalThis as any).__PlasmicBundlePromises[fileName] = new Promise(
+      if (!(globalThis as any).__StructoBundlePromises[fileName]) {
+        (globalThis as any).__StructoBundlePromises[fileName] = new Promise(
           (resolve) => {
-            (globalThis as any).__PlasmicBundlePromises[
+            (globalThis as any).__StructoBundlePromises[
               "__promise_resolve_" + fileName
             ] = resolve;
           }
@@ -377,20 +328,20 @@ function renderDynamicPayloadScripts(
         id={"init:" + missingModulesData.map((m) => m.fileName).join(";")}
         dangerouslySetInnerHTML={{
           __html: `
-            if (!globalThis.__PlasmicBundlePromises) {
-              globalThis.__PlasmicBundlePromises = {};
+            if (!globalThis.__StructoBundlePromises) {
+              globalThis.__StructoBundlePromises = {};
             }
             ${missingModulesData
               .map(
                 (
                   module
-                ) => `if (!globalThis.__PlasmicBundlePromises[${JSON.stringify(
+                ) => `if (!globalThis.__StructoBundlePromises[${JSON.stringify(
                   module.fileName
                 )}]) {
-                  globalThis.__PlasmicBundlePromises[${JSON.stringify(
+                  globalThis.__StructoBundlePromises[${JSON.stringify(
                     module.fileName
                   )}] = new Promise((resolve) => {
-                    globalThis.__PlasmicBundlePromises[${JSON.stringify(
+                    globalThis.__StructoBundlePromises[${JSON.stringify(
                       "__promise_resolve_" + module.fileName
                     )}] = resolve;
                   })

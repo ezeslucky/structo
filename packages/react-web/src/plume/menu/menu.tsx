@@ -13,11 +13,11 @@ import {
   useDerivedItemsFromChildren,
 } from "../collection-utils";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   noOutline,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   VariantDef,
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
@@ -46,15 +46,15 @@ const COLLECTION_OPTS = {
   sectionPlumeType: "menu-group",
 };
 
-export interface MenuConfig<C extends AnyPlasmicClass> {
-  isPlacedTopVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isPlacedBottomVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isPlacedLeftVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isPlacedRightVariant?: VariantDef<PlasmicClassVariants<C>>;
+export interface MenuConfig<C extends AnyStructoClass> {
+  isPlacedTopVariant?: VariantDef<StructoClassVariants<C>>;
+  isPlacedBottomVariant?: VariantDef<StructoClassVariants<C>>;
+  isPlacedLeftVariant?: VariantDef<StructoClassVariants<C>>;
+  isPlacedRightVariant?: VariantDef<StructoClassVariants<C>>;
 
-  itemsSlot: keyof PlasmicClassArgs<C>;
-  itemsContainer: keyof PlasmicClassOverrides<C>;
-  root: keyof PlasmicClassOverrides<C>;
+  itemsSlot: keyof StructoClassArgs<C>;
+  itemsContainer: keyof StructoClassOverrides<C>;
+  root: keyof StructoClassOverrides<C>;
 }
 
 /**
@@ -88,8 +88,8 @@ export interface MenuState {
   setFocusedValue: (value: string) => void;
 }
 
-export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
-  plasmicClass: C,
+export function useMenu<P extends BaseMenuProps, C extends AnyStructoClass>(
+  structoClass: C,
   props: P,
   config: MenuConfig<C>,
   ref: MenuRef = null
@@ -118,7 +118,7 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
   ]);
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
   };
 
   const overrides: Overrides = {
@@ -139,7 +139,7 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     [config.itemsSlot]: (
       <MenuContext.Provider value={contextValue}>
         {Array.from(state.collection).map((node) => renderCollectionNode(node))}
@@ -167,10 +167,10 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
   );
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
     state: plumeState,
   };

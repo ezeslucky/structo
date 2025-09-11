@@ -1,14 +1,14 @@
-import { extractPlasmicQueryData } from "@plasmicapp/prepass";
+import { extractStructoQueryData } from "@structoapp/prepass";
 import React from "react";
 import ReactDOM from "react-dom";
 import { renderToString as reactRenderToString } from "react-dom/server";
-import { ComponentRenderData, PlasmicComponentLoader } from "./loader-shared";
-import { PlasmicComponent } from "./PlasmicComponent";
-import { GlobalVariantSpec, PlasmicRootProvider } from "./PlasmicRootProvider";
+import { ComponentRenderData, StructoComponentLoader } from "./loader-shared";
+import { StructoComponent } from "./StructoComponent";
+import { GlobalVariantSpec, StructoRootProvider } from "./StructoRootProvider";
 import { ComponentLookupSpec } from "./utils";
 
 export async function renderToElement(
-  loader: PlasmicComponentLoader,
+  loader: StructoComponentLoader,
   target: HTMLElement,
   lookup: ComponentLookupSpec,
   opts: {
@@ -27,7 +27,7 @@ export async function renderToElement(
 }
 
 export function renderToString(
-  loader: PlasmicComponentLoader,
+  loader: StructoComponentLoader,
   lookup: ComponentLookupSpec,
   opts: {
     prefetchedData?: ComponentRenderData;
@@ -40,8 +40,8 @@ export function renderToString(
   return reactRenderToString(element);
 }
 
-export async function extractPlasmicQueryDataFromElement(
-  loader: PlasmicComponentLoader,
+export async function extractStructoQueryDataFromElement(
+  loader: StructoComponentLoader,
   lookup: ComponentLookupSpec,
   opts: {
     prefetchedData?: ComponentRenderData;
@@ -51,11 +51,11 @@ export async function extractPlasmicQueryDataFromElement(
   } = {}
 ) {
   const element = makeElement(loader, lookup, opts);
-  return extractPlasmicQueryData(element);
+  return extractStructoQueryData(element);
 }
 
 export async function hydrateFromElement(
-  loader: PlasmicComponentLoader,
+  loader: StructoComponentLoader,
   target: HTMLElement,
   lookup: ComponentLookupSpec,
   opts: {
@@ -72,7 +72,7 @@ export async function hydrateFromElement(
 }
 
 function makeElement(
-  loader: PlasmicComponentLoader,
+  loader: StructoComponentLoader,
   lookup: ComponentLookupSpec,
   opts: {
     prefetchedData?: ComponentRenderData;
@@ -84,7 +84,7 @@ function makeElement(
   } = {}
 ) {
   return (
-    <PlasmicRootProvider
+    <StructoRootProvider
       loader={loader}
       prefetchedData={opts.prefetchedData}
       globalVariants={opts.globalVariants}
@@ -92,11 +92,11 @@ function makeElement(
       pageParams={opts.pageParams}
       pageQuery={opts.pageQuery}
     >
-      <PlasmicComponent
+      <StructoComponent
         component={typeof lookup === "string" ? lookup : lookup.name}
         projectId={typeof lookup === "string" ? undefined : lookup.projectId}
         componentProps={opts.componentProps}
       />
-    </PlasmicRootProvider>
+    </StructoRootProvider>
   );
 }
