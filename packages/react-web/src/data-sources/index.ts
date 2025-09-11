@@ -1,1 +1,1 @@
-export * from "@plasmicapp/data-sources";
+export * from "@structoapp/data-sources";

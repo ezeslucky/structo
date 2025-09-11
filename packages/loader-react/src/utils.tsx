@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/loader-core";
+import { ComponentMeta } from "@structoapp/loader-core";
 import pascalcase from "pascalcase";
 import * as React from "react";
 

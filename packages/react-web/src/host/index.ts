@@ -1,1 +1,1 @@
-export * from "@plasmicapp/host";
+export * from "@structoapp/host";

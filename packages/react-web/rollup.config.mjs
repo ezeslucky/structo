@@ -58,12 +58,7 @@ export default [
     external: ["react"],
   },
 
-  // We also do a "skinny" build here that bundles each Plume component as a
-  // separate entrypoint, and exclude them from the main entrypoint.  This makes
-  // it possible to do better tree-shaking by PlasmicLoader -- react-aria checkbox
-  // code will only be included if the react-aria checkbox is actually used in the
-  // PlasmicLoader entrypoint component, not if it is used by _any_ component in
-  // the project.
+ 
   {
     input: {
       index: "./src/index-skinny.tsx",
@@ -76,8 +71,8 @@ export default [
       "plume/text-input/index": "./src/plume/text-input/index.tsx",
       "plume/triggered-overlay/index":
         "./src/plume/triggered-overlay/index.tsx",
-      "render/PlasmicHead/index": "./src/render/PlasmicHead/index.tsx",
-      "render/PlasmicImg/index": "./src/render/PlasmicImg/index.tsx",
+      "render/StructoHead/index": "./src/render/StructoHead/index.tsx",
+      "render/StructoImg/index": "./src/render/StructoImg/index.tsx",
     },
     external,
     output: [
@@ -100,8 +95,7 @@ export default [
       }),
     ],
   },
-  // We build packages under lib/ that just re-exports some other @plasmicapp packages.
-  // This makes sure they don't end up in the main package (which loader will embed).
+
   {
     input: {
       "data-sources/index": "./src/data-sources/index.ts",

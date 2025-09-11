@@ -1,4 +1,4 @@
-import { Split } from "@plasmicapp/loader-core";
+import { Split } from "@structoapp/loader-core";
 
 export const SPLIT_0: Split = {
   id: "split-0",

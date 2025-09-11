@@ -7,40 +7,23 @@ import { TriggeredOverlayContext } from "../triggered-overlay/context";
 import { useMenuTrigger } from "./menu-trigger";
 
 export interface DropdownMenuProps {
-  /**
-   * A ReactElement that takes in a `ref` as well as the usual mouse and
-   * pointer events. The dropdown menu will be positioned relative to this
-   * trigger.
-   */
+
   children: React.ReactElement;
 
-  /**
-   * The menu to show; must be either a ReactElement of Menu type, or
-   * a function that creates one if you prefer to delay creating it until
-   * the menu has been triggered.
-   */
+ 
   menu:
     | React.ReactElement<BaseMenuProps>
     | (() => React.ReactElement<BaseMenuProps>);
 
-  /**
-   * Where to place the menu relative to the trigger.
-   */
   placement?: Placement;
 
-  /**
-   * Whether the menu is currently shown.
-   */
+ 
   isOpen?: boolean;
 
-  /**
-   * Uncontrolled open state.
-   */
+  
   defaultOpen?: boolean;
 
-  /**
-   * Event handler fired when Menu's open state changes
-   */
+ 
   onOpenChange?: (isOpen: boolean) => void;
 }
 

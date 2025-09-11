@@ -6,16 +6,16 @@ import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { ItemLikeProps } from "../collection-utils";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
   noOutline,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   PLUME_STRICT_MODE,
   VariantDef,
 } from "../plume-utils";
-import { getDefaultPlasmicProps } from "../props-utils";
+import { getDefaultStructoProps } from "../props-utils";
 import { TriggeredOverlayContext } from "../triggered-overlay/context";
 import { MenuContext } from "./context";
 
@@ -26,20 +26,20 @@ export interface BaseMenuItemProps extends ItemLikeProps {
   onAction?: (key: string) => void;
 }
 
-interface MenuItemConfig<C extends AnyPlasmicClass> {
-  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isHighlightedVariant?: VariantDef<PlasmicClassVariants<C>>;
+interface MenuItemConfig<C extends AnyStructoClass> {
+  isDisabledVariant?: VariantDef<StructoClassVariants<C>>;
+  isHighlightedVariant?: VariantDef<StructoClassVariants<C>>;
 
-  labelSlot: keyof PlasmicClassArgs<C>;
+  labelSlot: keyof StructoClassArgs<C>;
 
-  root: keyof PlasmicClassOverrides<C>;
-  labelContainer: keyof PlasmicClassOverrides<C>;
+  root: keyof StructoClassOverrides<C>;
+  labelContainer: keyof StructoClassOverrides<C>;
 }
 
 export function useMenuItem<
   P extends BaseMenuItemProps,
-  C extends AnyPlasmicClass
->(plasmicClass: C, props: P, config: MenuItemConfig<C>) {
+  C extends AnyStructoClass
+>(structoClass: C, props: P, config: MenuItemConfig<C>) {
   const menuContext = React.useContext(MenuContext);
   const triggerContext = React.useContext(TriggeredOverlayContext);
 
@@ -48,7 +48,7 @@ export function useMenuItem<
       throw new Error("You can only use a Menu.Item within a Menu component.");
     }
 
-    return getDefaultPlasmicProps(plasmicClass, props);
+    return getDefaultStructoProps(structoClass, props);
   }
 
   const { children, onAction } = props;
@@ -68,6 +68,7 @@ export function useMenuItem<
   const ref = React.useRef<HTMLLIElement>(null);
 
   const { menuItemProps, labelProps } = useAriaMenuItem(
+    //@ts-ignore
     mergeProps(
       {
         // We need to merge both the onAction on MenuItem and the onAction
@@ -91,7 +92,7 @@ export function useMenuItem<
   );
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.isDisabledVariant, active: isDisabled },
       { def: config.isHighlightedVariant, active: isHighlighted }
@@ -99,7 +100,7 @@ export function useMenuItem<
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     [config.labelSlot]: children,
   };
 
@@ -114,10 +115,10 @@ export function useMenuItem<
   };
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
   };
 }

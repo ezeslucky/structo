@@ -6,15 +6,15 @@ import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import { renderCollectionNode, SectionLikeProps } from "../collection-utils";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   PLUME_STRICT_MODE,
 } from "../plume-utils";
 import {
-  getDefaultPlasmicProps,
+  getDefaultStructoProps,
   getStyleProps,
   StyleProps,
 } from "../props-utils";
@@ -22,23 +22,23 @@ import { MenuContext } from "./context";
 
 export interface BaseMenuGroupProps extends SectionLikeProps, StyleProps {}
 
-interface MenuGroupConfig<C extends AnyPlasmicClass> {
-  noTitleVariant: PlasmicClassVariants<C>;
-  isFirstVariant: PlasmicClassVariants<C>;
+interface MenuGroupConfig<C extends AnyStructoClass> {
+  noTitleVariant: StructoClassVariants<C>;
+  isFirstVariant: StructoClassVariants<C>;
 
-  itemsSlot: keyof PlasmicClassArgs<C>;
-  titleSlot: keyof PlasmicClassArgs<C>;
+  itemsSlot: keyof StructoClassArgs<C>;
+  titleSlot: keyof StructoClassArgs<C>;
 
-  root: keyof PlasmicClassOverrides<C>;
-  separator: keyof PlasmicClassOverrides<C>;
-  titleContainer: keyof PlasmicClassOverrides<C>;
-  itemsContainer: keyof PlasmicClassOverrides<C>;
+  root: keyof StructoClassOverrides<C>;
+  separator: keyof StructoClassOverrides<C>;
+  titleContainer: keyof StructoClassOverrides<C>;
+  itemsContainer: keyof StructoClassOverrides<C>;
 }
 
 export function useMenuGroup<
   P extends BaseMenuGroupProps,
-  C extends AnyPlasmicClass
->(plasmicClass: C, props: P, config: MenuGroupConfig<C>) {
+  C extends AnyStructoClass
+>(structoClass: C, props: P, config: MenuGroupConfig<C>) {
   const context = React.useContext(MenuContext);
 
   const node = (props as any)._node as
@@ -49,7 +49,7 @@ export function useMenuGroup<
     if (PLUME_STRICT_MODE) {
       throw new Error("You can only use a Menu.Group within a Menu component.");
     }
-    return getDefaultPlasmicProps(plasmicClass, props);
+    return getDefaultStructoProps(structoClass, props);
   }
 
   const { headingProps, groupProps } = useMenuSection({
@@ -62,7 +62,7 @@ export function useMenuGroup<
   });
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.noTitleVariant, active: !props.title },
       {
@@ -73,7 +73,7 @@ export function useMenuGroup<
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     [config.titleSlot]: props.title,
     [config.itemsSlot]: Array.from(node.childNodes).map((childNode) =>
       renderCollectionNode(childNode)
@@ -108,10 +108,10 @@ export function useMenuGroup<
   };
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
   };
 }

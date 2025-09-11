@@ -1,4 +1,4 @@
-import { usePlasmicCanvasContext } from "@plasmicapp/host";
+import { useStructoCanvasContext } from "@structoapp/host";
 import { usePress } from "@react-aria/interactions";
 import { AriaListBoxOptions, useListBox } from "@react-aria/listbox";
 import { HiddenSelect, useSelect as useAriaSelect } from "@react-aria/select";
@@ -30,12 +30,12 @@ import {
   useDerivedItems,
 } from "../collection-utils";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
   noOutline,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   VariantDef,
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
@@ -144,41 +144,7 @@ type AriaOptionType = React.ReactElement<BaseSelectOptionProps>;
 type AriaGroupType = React.ReactElement<BaseSelectOptionGroupProps>;
 type AriaSelectItemType = AriaOptionType | AriaGroupType;
 
-/**
- * Converts props in our BaseSelectProps into props that react-aria's
- * useSelect() understands.
- *
- * Because we're not exposing the Collections API (see ./index.tsx),
- * we are converting our own API into props for useSelect.
- *
- * Specifically, in Plume's API,
- * - `children` flattens to a list of ReactElements of type Select.Option
- *   or Select.OptionGroup
- *
- * and we map it this way to the Collections API:
- * - `items` is a list of those flattened ReactElements from `children`!
- * - `children`, as a render prop, is supposed to take one of the `items`
- *   and return a `Section` or `Item` element. We take an Option/OptionGroup
- *   element, and use its props to render the appropriate `Section` or
- *   `Item`. The "trick" here is that we then stuff the Option element as
- *   `Item.children`, and the OptionGroup element as `Section.title`.
- *
- * When the Collections API does its work deriving `Node`s, the corresponding
- * Option/OptionGroup ReactElements will end up as `Node.rendered`.
- *
- * Then, when we are actually rendering the content of the dropdown, we
- * iterate through each collected `Node`, and renders
- * React.cloneElement(Node.rendered, {_node: node}).  This "secretly" passes
- * the derived collection `Node` as a prop to Option and OptionGroup, and they
- * can make use of the derived `Node.key` etc in their rendering functions.
- *
- * One thing to note here is that we never "rendered" the Option/OptionGroup
- * React elements that the user constructed; instead, we just looked at the
- * props used on those elements, and passed those onto the Collections API.
- * What gets rendered to the screen is the cloned version of these elements
- * with the secret derived `_node` prop.  That means Option and OptionGroup
- * render functions can assume that _node is passed in.
- */
+
 function useAriaSelectProps(props: BaseSelectProps, config: SelectConfig<any>) {
   const {
     value,
@@ -243,19 +209,19 @@ export interface SelectRefValue extends SelectState {
   blur: () => void;
 }
 
-interface SelectConfig<C extends AnyPlasmicClass> {
-  placeholderVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isOpenVariant: VariantDef<PlasmicClassVariants<C>>;
-  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
+interface SelectConfig<C extends AnyStructoClass> {
+  placeholderVariant?: VariantDef<StructoClassVariants<C>>;
+  isOpenVariant: VariantDef<StructoClassVariants<C>>;
+  isDisabledVariant?: VariantDef<StructoClassVariants<C>>;
 
-  triggerContentSlot: keyof PlasmicClassArgs<C>;
-  optionsSlot: keyof PlasmicClassArgs<C>;
-  placeholderSlot: keyof PlasmicClassArgs<C>;
+  triggerContentSlot: keyof StructoClassArgs<C>;
+  optionsSlot: keyof StructoClassArgs<C>;
+  placeholderSlot: keyof StructoClassArgs<C>;
 
-  root: keyof PlasmicClassOverrides<C>;
-  trigger: keyof PlasmicClassOverrides<C>;
-  overlay: keyof PlasmicClassOverrides<C>;
-  optionsContainer: keyof PlasmicClassOverrides<C>;
+  root: keyof StructoClassOverrides<C>;
+  trigger: keyof StructoClassOverrides<C>;
+  overlay: keyof StructoClassOverrides<C>;
+  optionsContainer: keyof StructoClassOverrides<C>;
 
   OptionComponent?: React.ComponentType<ItemLikeProps>;
   OptionGroupComponent?: React.ComponentType<SectionLikeProps>;
@@ -269,8 +235,8 @@ interface SelectState {
   setSelectedValue: (value: string | null) => void;
 }
 
-export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
-  plasmicClass: C,
+export function useSelect<P extends BaseSelectProps, C extends AnyStructoClass>(
+  structoClass: C,
   props: P,
   config: SelectConfig<C>,
   ref: React.Ref<SelectRefValue> = null
@@ -292,7 +258,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     selectedContent,
   } = props;
 
-  const canvasCtx = usePlasmicCanvasContext();
+  const canvasCtx = useStructoCanvasContext();
 
   const { triggerProps: triggerPressProps, menuProps } = useAriaSelect(
     ariaProps,
@@ -310,7 +276,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     : null;
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.isOpenVariant, active: state.isOpen },
       { def: config.placeholderVariant, active: !state.selectedItem },
@@ -378,7 +344,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     [config.triggerContentSlot]: triggerContent,
     [config.placeholderSlot]: placeholder,
     [config.optionsSlot]: (
@@ -417,10 +383,10 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   );
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
     state: plumeState,
   };
@@ -434,7 +400,7 @@ function ListBoxWrapper(props: {
   const { state, menuProps, children } = props;
 
   const ref = React.useRef<HTMLElement>(null);
-  const canvasCtx = usePlasmicCanvasContext();
+  const canvasCtx = useStructoCanvasContext();
 
   const { listBoxProps } = useListBox(
     {

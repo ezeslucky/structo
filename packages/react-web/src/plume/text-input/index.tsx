@@ -2,11 +2,11 @@ import * as React from "react";
 import { omit, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   VariantDef,
 } from "../plume-utils";
 
@@ -36,21 +36,21 @@ export interface TextInputRefValue {
 
 export type TextInputRef = React.Ref<TextInputRefValue>;
 
-interface TextInputConfig<C extends AnyPlasmicClass> {
-  showStartIconVariant: VariantDef<PlasmicClassVariants<C>>;
-  showEndIconVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
-  startIconSlot?: keyof PlasmicClassArgs<C>;
-  endIconSlot?: keyof PlasmicClassArgs<C>;
-  root: keyof PlasmicClassOverrides<C>;
-  input: keyof PlasmicClassOverrides<C>;
+interface TextInputConfig<C extends AnyStructoClass> {
+  showStartIconVariant: VariantDef<StructoClassVariants<C>>;
+  showEndIconVariant?: VariantDef<StructoClassVariants<C>>;
+  isDisabledVariant?: VariantDef<StructoClassVariants<C>>;
+  startIconSlot?: keyof StructoClassArgs<C>;
+  endIconSlot?: keyof StructoClassArgs<C>;
+  root: keyof StructoClassOverrides<C>;
+  input: keyof StructoClassOverrides<C>;
 }
 
 export function useTextInput<
   P extends PlumeTextInputProps,
-  C extends AnyPlasmicClass
+  C extends AnyStructoClass
 >(
-  plasmicClass: C,
+  structoClass: C,
   props: P,
   config: TextInputConfig<C>,
   ref: TextInputRef = null
@@ -93,7 +93,7 @@ export function useTextInput<
   );
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.showStartIconVariant, active: showStartIcon },
       { def: config.showEndIconVariant, active: showEndIcon },
@@ -102,7 +102,7 @@ export function useTextInput<
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     ...(config.startIconSlot && { [config.startIconSlot]: startIcon }),
     ...(config.endIconSlot && { [config.endIconSlot]: endIcon }),
   };
@@ -117,32 +117,13 @@ export function useTextInput<
     },
     [config.input]: {
       props: {
-        // We throw all of extra "rest" onto the `input` element, except props
-        // that were meant for the Plasmic component -- the args and variants.
-        // We make two exceptions though:
-        // 1. onChange - Plume text-input is kind of screwy, and the "value" state
-        //    of the input element is not exposed to the outer component via the
-        //    normal way; instead, we register a separate "value" state that's
-        //    in additional to the input.value state. So that means there are
-        //    two `onChange` that we need to pipe through -- the one that updates
-        //    `$state.input.value`, the input value state internal to the component,
-        //    and the one that updates `$state.value`, the separate value state
-        //    exposed to the outside. The generated <PlasmicTextInput/> will pass
-        //    in the onChange for updating the internal `$state.input.value`, and
-        //    props.onChange here will pass in the onChange for updating the
-        //    externally exposed `$state.value`. Wow! Very sad.  If
-        //    `$state.input.value` were just externally exposed, then we wouldn't
-        //    need to do so; but we can't retroactively update people's TextInput
-        //    components that have already been forked :-/
-        // 2. `required`, because that prop existed prior to Plume pkg <= 19.1.1,
-        //    but it was not linked to the input's `required` attribute as it should.
-        //    So this again works around older versions of TextInput out there.
+       
         ...omit(
           rest as any,
-          ...plasmicClass.internalArgProps.filter(
+          ...structoClass.internalArgProps.filter(
             (prop) => prop !== "required" && prop !== "onChange"
           ),
-          ...plasmicClass.internalVariantProps
+          ...structoClass.internalVariantProps
         ),
         disabled: isDisabled,
         ref: inputRef,
@@ -153,10 +134,10 @@ export function useTextInput<
   };
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
   };
 }

@@ -1,4 +1,4 @@
-import type { HeadMetadata } from "@plasmicapp/query";
+import type { HeadMetadata } from "@structoapp/query";
 import { parse as parseHtml } from "node-html-parser";
 import { Metadata } from "next";
 
@@ -10,7 +10,7 @@ export async function fetchExtractedQueryData(url: string) {
 
   const html = await res.text();
   const root = parseHtml(html);
-  const script = root.querySelector("script[data-plasmic-prefetch-id]");
+  const script = root.querySelector("script[data-structo-prefetch-id]");
   if (script) {
     return JSON.parse(script.innerHTML);
   }
@@ -27,30 +27,25 @@ export async function fetchExtractedHeadMetadata(
 
   const html = await res.text();
   const root = parseHtml(html);
-  const script = root.querySelector("script[data-plasmic-head-metadata-id]");
+  const script = root.querySelector("script[data-structo-head-metadata-id]");
   if (script) {
     return JSON.parse(script.innerHTML);
   }
   return undefined;
 }
 
-/**
- * Helper function to extract Head metadata from Plasmic pages.
- *
- * Given current pathname + search params, returns an object compatible with
- * Next.js Metadata interface with SEO metadata.
- */
-export async function withPlasmicMetadata({
+
+export async function withStructoMetadata({
   pathname,
   searchParams,
 }: {
   pathname: string;
   searchParams: Record<string, string | string[]> | undefined;
 }): Promise<object> {
-  const isPlasmicSsr =
-    !!searchParams?.["plasmicSsr"] && searchParams?.["plasmicSsr"] !== "false";
+  const isStructoSsr =
+    !!searchParams?.["structoSsr"] && searchParams?.["structoSsr"] !== "false";
 
-  if (isPlasmicSsr) {
+  if (isStructoSsr) {
     // We're building the metadata for SSR endpoint here; this endpoint is not
     // exposed for users, so we can just return an empty object.
     return {};
@@ -58,7 +53,7 @@ export async function withPlasmicMetadata({
 
   // Fetch the same page from SSR endpoint to retrieve Head metadata
   const prepassHost =
-    process.env.PLASMIC_PREPASS_HOST ??
+    process.env.STRUCTO_PREPASS_HOST ??
     (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ??
     `http://localhost:${process.env.PORT ?? 3000}`;
 
@@ -70,7 +65,7 @@ export async function withPlasmicMetadata({
   );
 
   // Set `plasmicSsr` search param to indicate you are using the SSR endpoint.
-  newSearchParams.set("plasmicSsr", "true");
+  newSearchParams.set("structoSsr", "true");
 
   if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
     // If protection bypass is enabled, use it to ensure fetching from

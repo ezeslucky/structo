@@ -1,1 +1,1 @@
-export * from "./ExtractPlasmicQueryData";
+export * from "./ExtractStructoQueryData";

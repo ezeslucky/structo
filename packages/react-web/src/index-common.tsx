@@ -4,7 +4,7 @@ export { PlasmicTranslator } from "@plasmicapp/host";
 export {
   PlasmicPageGuard,
   withPlasmicPageGuard,
-} from "./auth/PlasmicPageGuard";
+} from "./auth/StructoPageGuard";
 export { omit, pick } from "./common";
 export { HTMLElementRefOf, StrictProps } from "./react-utils";
 export { PlasmicHead, plasmicHeadMeta } from "./render/PlasmicHead";

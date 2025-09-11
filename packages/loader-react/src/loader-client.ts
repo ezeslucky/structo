@@ -1,6 +1,6 @@
-import * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
+import * as StructoDataSourcesContext from "@structoapp/data-sources-context";
 // eslint-disable-next-line no-restricted-imports
-import * as PlasmicHost from "@plasmicapp/host";
+import * as StructoHost from "@structoapp/host";
 import {
   // eslint-disable-next-line no-restricted-imports
   registerComponent,
@@ -11,35 +11,35 @@ import {
   stateHelpersKeys,
   TokenRegistration,
   TraitMeta,
-} from "@plasmicapp/host";
-import { PlasmicModulesFetcher } from "@plasmicapp/loader-core";
-import * as PlasmicQuery from "@plasmicapp/query";
+} from "@structoapp/host";
+import { StructoModulesFetcher } from "@structoapp/loader-core";
+import * as StructoQuery from "@structoapp/query";
 import React from "react";
 import ReactDOM from "react-dom";
 import * as jsxDevRuntime from "react/jsx-dev-runtime";
 import * as jsxRuntime from "react/jsx-runtime";
 import { createUseGlobalVariant } from "./global-variants";
 import {
-  BaseInternalPlasmicComponentLoader,
+  BaseInternalStructoComponentLoader,
   CodeComponentMeta,
   CustomFunctionMeta,
   GlobalContextMeta,
   InitOptions,
   internalSetRegisteredFunction,
-  PlasmicRootWatcher,
+  StructoRootWatcher,
   REGISTERED_CODE_COMPONENT_HELPERS,
   REGISTERED_CUSTOM_FUNCTIONS,
   SUBSTITUTED_COMPONENTS,
   SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
 } from "./loader-shared";
 
-export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponentLoader {
-  private readonly roots: PlasmicRootWatcher[] = [];
+export class InternalStructoComponentLoader extends BaseInternalStructoComponentLoader {
+  private readonly roots: StructoRootWatcher[] = [];
 
   constructor(opts: InitOptions) {
     super({
       opts,
-      fetcher: new PlasmicModulesFetcher(opts),
+      fetcher: new StructoModulesFetcher(opts),
       onBundleMerged: () => {
         this.refreshRegistry();
       },
@@ -52,12 +52,10 @@ export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponent
         "react/jsx-runtime": jsxRuntime,
         "react/jsx-dev-runtime": jsxDevRuntime,
 
-        // Also inject @plasmicapp/query and @plasmicapp/host to use the
-        // same contexts here and in loader-downloaded code.
-        "@plasmicapp/query": PlasmicQuery,
-        "@plasmicapp/data-sources-context": PlasmicDataSourcesContext,
-        "@plasmicapp/host": PlasmicHost,
-        "@plasmicapp/loader-runtime-registry": {
+        "@structoapp/query": StructoQuery,
+        "@structoapp/data-sources-context": StructoDataSourcesContext,
+        "@structoapp/host": StructoHost,
+        "@structoapp/loader-runtime-registry": {
           components: SUBSTITUTED_COMPONENTS,
           globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
           codeComponentHelpers: REGISTERED_CODE_COMPONENT_HELPERS,
@@ -140,11 +138,11 @@ export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponent
     registerToken(token);
   }
 
-  subscribePlasmicRoot(watcher: PlasmicRootWatcher) {
+  subscribeStructoRoot(watcher: StructoRootWatcher) {
     this.roots.push(watcher);
   }
 
-  unsubscribePlasmicRoot(watcher: PlasmicRootWatcher) {
+  unsubscribeStructoRoot(watcher: StructoRootWatcher) {
     const index = this.roots.indexOf(watcher);
     if (index >= 0) {
       this.roots.splice(index, 1);
@@ -152,12 +150,7 @@ export class InternalPlasmicComponentLoader extends BaseInternalPlasmicComponent
   }
 
   refreshRegistry() {
-    // We swap global variants' useXXXGlobalVariant() hook with
-    // a fake one that just reads from the PlasmicRootContext. Because
-    // global variant values are not supplied by the generated global variant
-    // context providers, but instead by <PlasmicRootProvider/> and by
-    // PlasmicComponentLoader.setGlobalVariants(), we redirect these
-    // hooks to read from them instead.
+    
     for (const globalGroup of this.getBundle().globalGroups) {
       if (globalGroup.type !== "global-screen") {
         SUBSTITUTED_GLOBAL_VARIANT_HOOKS[globalGroup.id] =

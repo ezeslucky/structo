@@ -8,11 +8,11 @@ import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { useEnsureSSRProvider } from "../../render/ssr";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   VariantDef,
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
@@ -53,16 +53,16 @@ function asAriaSwitchProps(props: SwitchProps) {
   return ariaProps;
 }
 
-interface SwitchConfig<C extends AnyPlasmicClass> {
-  isCheckedVariant: VariantDef<PlasmicClassVariants<C>>;
-  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
-  noLabelVariant?: VariantDef<PlasmicClassVariants<C>>;
-  labelSlot?: keyof PlasmicClassArgs<C>;
-  root: keyof PlasmicClassOverrides<C>;
+interface SwitchConfig<C extends AnyStructoClass> {
+  isCheckedVariant: VariantDef<StructoClassVariants<C>>;
+  isDisabledVariant?: VariantDef<StructoClassVariants<C>>;
+  noLabelVariant?: VariantDef<StructoClassVariants<C>>;
+  labelSlot?: keyof StructoClassArgs<C>;
+  root: keyof StructoClassOverrides<C>;
 }
 
-export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
-  plasmicClass: C,
+export function useSwitch<P extends SwitchProps, C extends AnyStructoClass>(
+  structoClass: C,
   props: P,
   config: SwitchConfig<C>,
   ref: SwitchRef = null
@@ -75,7 +75,7 @@ export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
   const state = useToggleState(ariaProps);
   const { inputProps } = useAriaSwitch(ariaProps, state, inputRef);
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       {
         def: config.isDisabledVariant,
@@ -108,7 +108,7 @@ export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
     },
   };
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     ...(config.labelSlot ? { [config.labelSlot]: children } : {}),
   };
 
@@ -131,10 +131,10 @@ export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
   );
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
-      args: args as PlasmicClassArgs<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      overrides: overrides as StructoClassOverrides<C>,
+      args: args as StructoClassArgs<C>,
     },
     state: plumeState,
   };

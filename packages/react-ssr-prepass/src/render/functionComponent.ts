@@ -62,7 +62,7 @@ const render = (
   } catch (error: unknown) {
     if (!(error instanceof Promise)) {
       console.warn(
-        `PLASMIC: Encountered error when pre-rendering ${getComponentName(
+        `STRUCTO: Encountered error when pre-rendering ${getComponentName(
           type
         )}: ${error}`
       )

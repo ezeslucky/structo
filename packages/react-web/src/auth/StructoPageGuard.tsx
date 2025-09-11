@@ -1,5 +1,5 @@
-import { usePlasmicDataSourceContext } from "@plasmicapp/data-sources-context";
-import * as plasmicQuery from "@plasmicapp/query";
+import { useStructoDataSourceContext } from "@structoapp/data-sources-context";
+import * as structoQuery from "@structoapp/query";
 import React from "react";
 
 // https://stackoverflow.com/a/2117523
@@ -52,7 +52,7 @@ async function triggerLogin(
   window.location.href = url;
 }
 
-interface PlasmicPageGuardProps {
+interface StructoPageGuardProps {
   appId: string;
   authorizeEndpoint: string;
   minRole?: string;
@@ -61,7 +61,7 @@ interface PlasmicPageGuardProps {
   unauthorizedComp?: React.ReactNode;
 }
 
-export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
+export function StructoPageGuard(props: StructoPageGuardProps) {
   const {
     appId,
     authorizeEndpoint,
@@ -71,7 +71,7 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
     unauthorizedComp,
   } = props;
 
-  const dataSourceCtxValue = usePlasmicDataSourceContext();
+  const dataSourceCtxValue = useStructoDataSourceContext();
 
   React.useEffect(() => {
     if (canTriggerLogin) {
@@ -109,23 +109,11 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
     }
     return dataSourceCtxValue.user.roleIds.includes(minRole);
   }
-
-  // If we are in prepass, PlasmicPageGuard should not render anything
-  // it's expected that pages are only equipped with PlasmicPageGuard
-  // when it's known that it will disable prepass/prefetching
-  if (plasmicQuery.isPlasmicPrepass?.()) {
+  if (structoQuery.isStructoPrepass?.()) {
     return null;
   }
 
-  /*
-  PlasmicPageGuard has three cases:
-  1. No value of dataSourceCtxValue, user is loading or a trigger login should be performed.
-     In this case, we don't want to render the children or the access denied message.
-     While the user is loading we look to see if don't have a user value as we can be in a
-     revalidate state.
-  2. The user doesn't have access to the page in which we show an access denied message.
-  3. The user has access to the page in which we render the children.
-  */
+  
   if (
     !dataSourceCtxValue ||
     (dataSourceCtxValue.isUserLoading && !dataSourceCtxValue.user) ||
@@ -145,14 +133,14 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
   return <>{children}</>;
 }
 
-export function withPlasmicPageGuard<P extends object>(
+export function withStructoPageGuard<P extends object>(
   WrappedComponent: React.ComponentType<P>,
-  options: Omit<PlasmicPageGuardProps, "children">
+  options: Omit<StructoPageGuardProps, "children">
 ) {
   const PageGuard: React.FC<P> = (props) => (
-    <PlasmicPageGuard {...options}>
+    <StructoPageGuard {...options}>
       <WrappedComponent {...props} />
-    </PlasmicPageGuard>
+    </StructoPageGuard>
   );
   return PageGuard;
 }

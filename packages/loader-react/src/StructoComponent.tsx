@@ -1,11 +1,11 @@
 import * as React from "react";
-import { usePlasmicRootContext } from "./PlasmicRootProvider";
-import { usePlasmicComponent } from "./usePlasmicComponent";
+import { useStructoRootContext } from "./StructoRootProvider";
+import { useStructoComponent } from "./useStructoComponent";
 import { MaybeWrap } from "./utils";
 
-const PlasmicComponentContext = React.createContext(false);
+const StructoComponentContext = React.createContext(false);
 
-export function PlasmicComponent(props: {
+export function StructoComponent(props: {
   /**
    * Name of the component to render, or the path of the page component
    */
@@ -25,13 +25,13 @@ export function PlasmicComponent(props: {
 }): React.ReactElement | null {
   const { component, projectId, componentProps, forceOriginal } = props;
 
-  const rootContext = usePlasmicRootContext();
-  const isRootLoader = !React.useContext(PlasmicComponentContext);
+  const rootContext = useStructoRootContext();
+  const isRootLoader = !React.useContext(StructoComponentContext);
 
   if (!rootContext) {
     // no existing PlasmicRootProvider
     throw new Error(
-      `You must use <PlasmicRootProvider/> at the root of your app`
+      `You must use <StructoRootProvider/> at the root of your app`
     );
   }
 
@@ -46,7 +46,7 @@ export function PlasmicComponent(props: {
     ...rest
   } = rootContext;
 
-  const Component = usePlasmicComponent(
+  const Component = useStructoComponent(
     { name: component, projectId, isCode: false },
     { forceOriginal }
   );
@@ -80,14 +80,6 @@ export function PlasmicComponent(props: {
     let elt = <Component {...componentProps} />;
 
     if (isRootLoader) {
-      // If this is the root PlasmicComponent, then wrap the content with the
-      // react-web's PlasmicRootProvider.  We are doing this here, instead of
-      // say PlasmicRootProvider, because we don't have access to this context
-      // provider until data has been loaded.  If we insert this provider into
-      // the tree at the root after data is loaded, then we'll invalidate the
-      // React tree and tree state, which is bad.  Instead, we do it at the
-      // "root-most PlasmicComponent"; we won't risk invalidating the sub-tree
-      // here because there were no children before the data came in.
       const lookup = loader.getLookup();
       const ReactWebRootProvider = lookup.getRootProvider();
       const GlobalContextsProvider = lookup.getGlobalContextsProvider({
@@ -113,9 +105,9 @@ export function PlasmicComponent(props: {
               </GlobalContextsProvider>
             )}
           >
-            <PlasmicComponentContext.Provider value={true}>
+            <StructoComponentContext.Provider value={true}>
               {elt}
-            </PlasmicComponentContext.Provider>
+            </StructoComponentContext.Provider>
           </MaybeWrap>
         </ReactWebRootProvider>
       );

@@ -1,1 +1,1 @@
-export { ExtractPlasmicQueryData as __EXPERMIENTAL__ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
+export { ExtractStructoQueryData as __EXPERMIENTAL__ExtractStructoQueryData } from "@structoapp/nextjs-app-router";

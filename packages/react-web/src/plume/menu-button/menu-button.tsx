@@ -9,11 +9,11 @@ import { Overrides } from "../../render/elements";
 import { useEnsureSSRProvider } from "../../render/ssr";
 import { BaseMenuProps } from "../menu/menu";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   VariantDef,
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
@@ -71,14 +71,14 @@ export interface BaseMenuButtonProps
   menuWidth?: number;
 }
 
-export interface MenuButtonConfig<C extends AnyPlasmicClass> {
-  isOpenVariant: VariantDef<PlasmicClassVariants<C>>;
-  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
+export interface MenuButtonConfig<C extends AnyStructoClass> {
+  isOpenVariant: VariantDef<StructoClassVariants<C>>;
+  isDisabledVariant?: VariantDef<StructoClassVariants<C>>;
 
-  menuSlot: keyof PlasmicClassArgs<C>;
+  menuSlot: keyof StructoClassArgs<C>;
 
-  root: keyof PlasmicClassOverrides<C>;
-  trigger: keyof PlasmicClassOverrides<C>;
+  root: keyof StructoClassOverrides<C>;
+  trigger: keyof StructoClassOverrides<C>;
 }
 
 interface MenuButtonState {
@@ -98,9 +98,9 @@ export interface MenuButtonRefValue extends MenuButtonState {
 
 export function useMenuButton<
   P extends BaseMenuButtonProps,
-  C extends AnyPlasmicClass
+  C extends AnyStructoClass
 >(
-  plasmicClass: C,
+  structoClass: C,
   props: P,
   config: MenuButtonConfig<C>,
   outerRef: MenuButtonRef = null
@@ -142,7 +142,7 @@ export function useMenuButton<
   const { focusableProps: triggerFocusProps } = useFocusable(props, triggerRef);
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.isOpenVariant, active: state.isOpen },
       { def: config.isDisabledVariant, active: isDisabled }
@@ -150,7 +150,7 @@ export function useMenuButton<
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     [config.menuSlot]: state.isOpen ? makeMenu() : undefined,
   };
 
@@ -206,10 +206,10 @@ export function useMenuButton<
   );
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
     state: plumeState,
   };

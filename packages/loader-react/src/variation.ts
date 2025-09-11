@@ -2,21 +2,21 @@ import type {
   ExperimentSlice,
   SegmentSlice,
   Split,
-} from "@plasmicapp/loader-core";
-import type { GlobalVariantSpec } from "./PlasmicRootProvider";
+} from "@structoapp/loader-core";
+import type { GlobalVariantSpec } from "./StructoRootProvider";
 
-export function getPlasmicCookieValues() {
+export function getStructoCookieValues() {
   return Object.fromEntries(
     document.cookie
       .split("; ")
-      .filter((cookie) => cookie.includes("plasmic:"))
+      .filter((cookie) => cookie.includes("structo:"))
       .map((cookie) => cookie.split("="))
       .map(([key, value]) => [key.split(":")[1], value])
   );
 }
 
-export function updatePlasmicCookieValue(key: string, value: string) {
-  document.cookie = `plasmic:${key}=${value}`;
+export function updateStructoCookieValue(key: string, value: string) {
+  document.cookie = `structo:${key}=${value}`;
 }
 
 export const getGlobalVariantsFromSplits = (

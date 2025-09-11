@@ -1,4 +1,4 @@
-import { usePlasmicCanvasContext } from "@plasmicapp/host";
+import { useStructoCanvasContext } from "@structoapp/host";
 import { useOption as useAriaOption } from "@react-aria/listbox";
 import { Node } from "@react-types/shared";
 import * as React from "react";
@@ -7,17 +7,17 @@ import { mergeProps, mergeRefs } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { ItemLikeProps } from "../collection-utils";
 import {
-  AnyPlasmicClass,
+  AnyStructoClass,
   mergeVariantToggles,
   noOutline,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
   PLUME_STRICT_MODE,
   VariantDef,
 } from "../plume-utils";
 import {
-  getDefaultPlasmicProps,
+  getDefaultStructoProps,
   getStyleProps,
   StyleProps,
 } from "../props-utils";
@@ -25,24 +25,24 @@ import { SelectContext } from "./context";
 
 export interface BaseSelectOptionProps extends ItemLikeProps, StyleProps {}
 
-interface SelectOptionConfig<C extends AnyPlasmicClass> {
-  isSelectedVariant: VariantDef<PlasmicClassVariants<C>>;
-  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
-  isHighlightedVariant?: VariantDef<PlasmicClassVariants<C>>;
+interface SelectOptionConfig<C extends AnyStructoClass> {
+  isSelectedVariant: VariantDef<StructoClassVariants<C>>;
+  isDisabledVariant?: VariantDef<StructoClassVariants<C>>;
+  isHighlightedVariant?: VariantDef<StructoClassVariants<C>>;
 
-  labelSlot: keyof PlasmicClassArgs<C>;
+  labelSlot: keyof StructoClassArgs<C>;
 
-  root: keyof PlasmicClassOverrides<C>;
-  labelContainer: keyof PlasmicClassOverrides<C>;
+  root: keyof StructoClassOverrides<C>;
+  labelContainer: keyof StructoClassOverrides<C>;
 }
 
 export type SelectOptionRef = React.Ref<HTMLElement>;
 
 export function useSelectOption<
   P extends BaseSelectOptionProps,
-  C extends AnyPlasmicClass
+  C extends AnyStructoClass
 >(
-  plasmicClass: C,
+  structoClass: C,
   props: P,
   config: SelectOptionConfig<C>,
   outerRef: SelectOptionRef = null
@@ -59,12 +59,12 @@ export function useSelectOption<
       );
     }
 
-    return getDefaultPlasmicProps(plasmicClass, props);
+    return getDefaultStructoProps(structoClass, props);
   }
 
   const { children } = props;
 
-  const canvasCtx = usePlasmicCanvasContext();
+  const canvasCtx = useStructoCanvasContext();
   const rootRef = React.useRef<HTMLElement>(null);
   const onRef = mergeRefs(rootRef, outerRef);
 
@@ -95,7 +95,7 @@ export function useSelectOption<
   );
 
   const variants = {
-    ...pick(props, ...plasmicClass.internalVariantProps),
+    ...pick(props, ...structoClass.internalVariantProps),
     ...mergeVariantToggles(
       { def: config.isSelectedVariant, active: isSelected },
       { def: config.isDisabledVariant, active: isDisabled },
@@ -104,7 +104,7 @@ export function useSelectOption<
   };
 
   const args = {
-    ...pick(props, ...plasmicClass.internalArgProps),
+    ...pick(props, ...structoClass.internalArgProps),
     [config.labelSlot]: children,
   };
 
@@ -125,10 +125,10 @@ export function useSelectOption<
   };
 
   return {
-    plasmicProps: {
-      variants: variants as PlasmicClassVariants<C>,
-      args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
+    structoProps: {
+      variants: variants as StructoClassVariants<C>,
+      args: args as StructoClassArgs<C>,
+      overrides: overrides as StructoClassOverrides<C>,
     },
   };
 }

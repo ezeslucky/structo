@@ -2,7 +2,7 @@ import {
   ComponentMeta,
   getBundleSubset,
   LoaderBundleOutput,
-} from "@plasmicapp/loader-core";
+} from "@structoapp/loader-core";
 import type { ComponentRenderData } from "./loader-shared";
 import { intersect } from "./utils";
 

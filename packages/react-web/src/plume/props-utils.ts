@@ -1,10 +1,10 @@
 import * as React from "react";
 import { pick, pickBy } from "../common";
 import {
-  AnyPlasmicClass,
-  PlasmicClassArgs,
-  PlasmicClassOverrides,
-  PlasmicClassVariants,
+  AnyStructoClass,
+  StructoClassArgs,
+  StructoClassOverrides,
+  StructoClassVariants,
 } from "./plume-utils";
 
 export interface StyleProps {
@@ -16,21 +16,21 @@ export function getStyleProps<P extends StyleProps>(props: P): StyleProps {
   return pick(props, "className", "style");
 }
 
-export function getDefaultPlasmicProps<C extends AnyPlasmicClass>(
-  plasmicClass: C,
+export function getDefaultStructoProps<C extends AnyStructoClass>(
+  structoClass: C,
   props: Record<string, any>
 ) {
   return {
-    plasmicProps: {
+    structoProps: {
       variants: pick(
         props,
-        ...plasmicClass.internalVariantProps
-      ) as PlasmicClassVariants<C>,
+        ...structoClass.internalVariantProps
+      ) as StructoClassVariants<C>,
       args: pick(
         props,
-        ...plasmicClass.internalArgProps
-      ) as PlasmicClassArgs<C>,
-      overrides: {} as PlasmicClassOverrides<C>,
+        ...structoClass.internalArgProps
+      ) as StructoClassArgs<C>,
+      overrides: {} as StructoClassOverrides<C>,
     },
   };
 }

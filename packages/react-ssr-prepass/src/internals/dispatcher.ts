@@ -274,5 +274,5 @@ export const Dispatcher = {
   useEffect: noop,
   useDebugValue: noop,
   useInsertionEffect: noop,
-  isPlasmicPrepass: true
+  isStructoPrepass: true
 }

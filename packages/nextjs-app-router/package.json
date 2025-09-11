@@ -25,7 +25,7 @@
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "dependencies": {
-    "@structoapp/prepass": "1.2.0",
+    "@structoapp/prepass": "1.2.3",
     "@structoapp/query": "1.2.3",
     "cross-port-killer": "1.4.0",
     "cross-spawn": "^7.0.3",

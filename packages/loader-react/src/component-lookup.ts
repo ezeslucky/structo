@@ -5,7 +5,7 @@ import {
   GlobalGroupMeta,
   LoaderBundleOutput,
   Registry,
-} from '@plasmicapp/loader-core';
+} from '@structoapp/loader-core';
 import * as React from 'react';
 import { ComponentLookupSpec, getCompMetas } from './utils';
 
@@ -38,8 +38,8 @@ export class ComponentLookup {
       forceOriginal: opts.forceOriginal,
     });
     return !opts.forceOriginal &&
-      typeof entry?.getPlasmicComponent === 'function'
-      ? entry.getPlasmicComponent()
+      typeof entry?.getStructoComponent === 'function'
+      ? entry.getStructoComponent()
       : (entry.default as P);
   }
 
@@ -78,8 +78,8 @@ export class ComponentLookup {
       projectMeta.globalContextsProviderFileName
     );
 
-    return typeof entry?.getPlasmicComponent === 'function'
-      ? entry.getPlasmicComponent()
+    return typeof entry?.getStructoComponent === 'function'
+      ? entry.getStructoComponent()
       : entry.default;
   }
 

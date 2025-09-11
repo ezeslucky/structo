@@ -1,59 +1,3 @@
-/**
- * In general, we try not to expose react-aria's Collections API to Plume users.
- * The Collections API is how react-aria users pass data about collections of
- * things using the built-in Item and Section components, which are abstract,
- * metadata-only components that don't render anything but only serve to specify
- * data.  For example, here's how you would use react-spectrum's Picker:
- *
- *   <Picker>
- *     <Section title="Asia">
- *       <Item key="taiwan">Taiwan</Item>
- *       <Item key="japan">Japan</Item>
- *       <Item key="china">China</Item>
- *     </Section>
- *     <Section title="Europe">
- *       <Item key="germany">Germany</Item>
- *       <Item key="france">France</Item>
- *     </Section>
- *   </Picker>
- *
- * You would re-use this same Item/Section components to pass similar things to
- * Menu, Tabs, etc.
- *
- * For Plasmic, this API is too abstract.  The user has explicitly designed components
- * like Select.Option and Select.OptionGroup, and it is weird that they don't actually
- * use these components. It is more natural to do:
- *
- *   <Select>
- *     <Select.OptionGroup title="Asia">
- *       <Select.Option key="taiwan">Taiwan</Select>
- *     </Select.OptionGroup>
- *   </Select>
- *
- * For Plume, we let users directly use the components they designed, both to collect
- * information and to perform actual rendering.  For example, for Plume,
- * you'd use Select.Option instead of Item, and Select.OptionGroup instead of Section.
- * This means that the Select.Option props will collect the same information Item
- * does.
- *
- * A component like Select.Option then serves two purposes:
- *
- * 1. Allow users to specify the collection of data, like in the above example
- *    Here, we're mainly interested in the props in those ReactElements so
- *    we can pass the Item/Section data onto react-aria's APIs.  We are not
- *    actually rendering these elements.
- * 2. Once react-aria's Collections API has gone through them and built
- *    Collection "nodes", we then create cloned versions of these elements
- *    with the corresponding node passed in as a secret prop.  These ReactElements
- *    are then actually used to _render_ the corresponding Option / OptionGroup.
- *
- * This file contains helper functions to help with implementing the above.
- *
- * Note also that most of the collections-based react-aria components expose
- * a parallel API that accepts a list of "items" and a render prop, instead
- * of list of Item/Section elements.  This is for efficiency, but we are opting
- * to only support the composite-component pattern for now for simplicity.
- */
 
 import { Item, Section } from "@react-stately/collections";
 import { Node } from "@react-types/shared";
@@ -62,7 +6,7 @@ import { isString } from "../common";
 import { getElementTypeName, toChildArray } from "../react-utils";
 import { getPlumeType, PLUME_STRICT_MODE } from "./plume-utils";
 
-export interface PlasmicLoaderProps<T> {
+export interface StructoLoaderProps<T> {
   component: string;
   componentProps: T;
 }
@@ -102,7 +46,7 @@ export interface ItemLikeProps {
 
 type LoaderAwareItemLikeProps =
   | ItemLikeProps
-  | PlasmicLoaderProps<ItemLikeProps>;
+  | StructoLoaderProps<ItemLikeProps>;
 
 /**
  * Props for a Plume component that corresponds to a Section
@@ -126,7 +70,7 @@ export interface SectionLikeProps {
 
 type LoaderAwareSectionLikeProps =
   | SectionLikeProps
-  | PlasmicLoaderProps<SectionLikeProps>;
+  | StructoLoaderProps<SectionLikeProps>;
 
 export type ItemJson = LeafItemJson | SectionJson;
 
@@ -158,7 +102,7 @@ export function deriveItemsFromProps(
 ) {
   if (opts.itemsProp && opts.itemsProp in props) {
     if (!opts.ItemComponent || !opts.SectionComponent) {
-      throw new Error(`You may need to re-generate your Plasmic* files`);
+      throw new Error(`You may need to re-generate your Structo* files`);
     }
     const items = props[opts.itemsProp] as ItemJson[] | undefined;
     return deriveItemsFromItemsProp(items, {

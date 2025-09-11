@@ -4,7 +4,7 @@ export type {
   ComponentMeta,
   PageMeta,
   PageMetadata,
-} from "@plasmicapp/loader-core";
+} from "@structoapp/loader-core";
 export { convertBundlesToComponentRenderData } from "./bundles";
 export type { ComponentRenderData, InitOptions } from "./loader-shared";
 export { matchesPagePath } from "./utils";

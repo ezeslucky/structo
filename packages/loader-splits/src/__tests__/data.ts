@@ -1,4 +1,4 @@
-import { Split } from "@plasmicapp/loader-fetcher";
+import { Split } from "@structoapp/loader-fetcher";
 
 export const SEGMENT_SPLIT: Split = {
   name: "SEGMENT_SPLIT",
@@ -13,7 +13,7 @@ export const SEGMENT_SPLIT: Split = {
       contents: [],
       cond: {},
     },
-    {
+    { 
       id: "slice-1",
       contents: [],
       cond: {

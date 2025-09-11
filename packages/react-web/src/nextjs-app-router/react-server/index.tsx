@@ -1,27 +1,20 @@
-import { ExtractPlasmicQueryData } from "@plasmicapp/nextjs-app-router";
+import { ExtractStructoQueryData } from "@structoapp/nextjs-app-router";
 import {
   fetchExtractedHeadMetadata,
   fetchExtractedQueryData,
-  withPlasmicMetadata,
-} from "@plasmicapp/nextjs-app-router/react-server";
-import { PlasmicQueryDataProvider } from "@plasmicapp/query";
+  withStructoMetadata,
+} from "@structoapp/nextjs-app-router/react-server";
+import { StructoQueryDataProvider } from "@structoapp/query";
 import React from "react";
 
 export {
   fetchExtractedQueryData as __EXPERMIENTAL__fetchExtractedQueryData,
   fetchExtractedHeadMetadata as __EXPERMIENTAL__fetchExtractedHeadMetadata,
-  withPlasmicMetadata as __EXPERMIENTAL__withPlasmicMetadata,
+  withStructoMetadata as __EXPERMIENTAL__withStructoMetadata,
 };
 
-/**
- * Helper function to extract Plasmic data.
- *
- * Given React element for your page and current pathname + search
- * params, returns:
- * - The extracted query data, if `plasmicSsr` search param is set
- * - A copy of the page element wraped within PlasmicQueryDataProvider to provide the extracted query data, otherwise
- */
-export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
+
+export async function __EXPERMIENTAL__withExtractStructoQueryData(
   pageRootElt: React.ReactElement,
   {
     pathname,
@@ -31,19 +24,19 @@ export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
     searchParams: Record<string, string | string[]> | undefined;
   }
 ) {
-  const isPlasmicSsr =
-    !!searchParams?.["plasmicSsr"] && searchParams?.["plasmicSsr"] !== "false";
+  const isStructoSsr =
+    !!searchParams?.["structoSsr"] && searchParams?.["structoSsr"] !== "false";
 
   // If `plasmicSsr` search param is set, just wrap the page inside
   // <ExtractPlasmicQueryData>
-  if (isPlasmicSsr) {
-    return <ExtractPlasmicQueryData>{pageRootElt}</ExtractPlasmicQueryData>;
+  if (isStructoSsr) {
+    return <ExtractStructoQueryData>{pageRootElt}</ExtractStructoQueryData>;
   }
 
   // Otherwise, fetch the same endpoint, but setting `plasmicSsr` to extract the
   // query data.
   const prepassHost =
-    process.env.PLASMIC_PREPASS_HOST ??
+    process.env.STRUCTO_PREPASS_HOST ??
     (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ??
     `http://localhost:${process.env.PORT ?? 3000}`;
 
@@ -56,7 +49,7 @@ export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
 
   // Set `plasmicSsr` search param to indicate you are using this endpoint
   // to extract query data.
-  newSearchParams.set("plasmicSsr", "true");
+  newSearchParams.set("structoSsr", "true");
 
   if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
     // If protection bypass is enabled, use it to ensure fetching from
@@ -74,8 +67,8 @@ export async function __EXPERMIENTAL__withExtractPlasmicQueryData(
 
   // Provide the query data to your page
   return (
-    <PlasmicQueryDataProvider prefetchedCache={prefetchedQueryData}>
+    <StructoQueryDataProvider prefetchedCache={prefetchedQueryData}>
       {pageRootElt}
-    </PlasmicQueryDataProvider>
+    </StructoQueryDataProvider>
   );
 }
